@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{{ store.name }} | 午餐系統</title>
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+</head>
+
+<body>
+<nav class="navbar navbar-default navbar-static-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="{% url 'home' %}">午餐系統</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <h1>{{ store.name }}</h1>
+  <p>{{ store.notes }}</p>
+  <table class="table">
+    <thead>
+      <tr><th>品項</th><th>單價</th></tr>
+    </thead>
+    <tbody>
+      {% for item in store.menu_items.all %}
+      <tr><td>{{ item.name }}</td><td>{{ item.price }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>
