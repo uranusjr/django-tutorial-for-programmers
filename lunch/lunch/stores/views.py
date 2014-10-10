@@ -5,7 +5,7 @@ from .models import Store
 
 def store_list(request):
     stores = Store.objects.all()
-    return render(request, 'store_list.html', {'stores': stores})
+    return render(request, 'stores/store_list.html', {'stores': stores})
 
 
 def store_detail(request, pk):
@@ -13,4 +13,4 @@ def store_detail(request, pk):
         store = Store.objects.get(pk=pk)
     except Store.DoesNotExist:
         raise Http404
-    return render(request, 'store_detail.html', {'store': store})
+    return render(request, 'stores/store_detail.html', {'store': store})
