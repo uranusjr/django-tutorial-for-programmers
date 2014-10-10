@@ -8,7 +8,6 @@
 ─────────> │     view     │ ──────────>
            │              │
            └──────────────┘
-
 ```
 
 這顯然是一個 [function](http://sco.wikipedia.org/wiki/Function_(mathematics))！所以在 Django 中，每個 view 其實就是一個 function。這個 function 接受一個 request 引數（與其他參數，我們之後會提到），回傳一個 `django.http.HttpResponse` 物件。由於 HTTP response 格式需要設定很多東西，所以 Django 提供了一個 shortcut `django.shortcuts.render` 來方便我們產出 response 物件。
