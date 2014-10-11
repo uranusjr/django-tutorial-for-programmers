@@ -1,0 +1,13 @@
+{% extends 'stores/base.html' %}
+
+
+{% block title %}更新 {{ store.name }} | {{ block.super }}{% endblock title %}
+
+
+{% block content %}
+<form action="" method="post" role="form">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-primary">更新</button>
+</form>
+{% endblock content %}
