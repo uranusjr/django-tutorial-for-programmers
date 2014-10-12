@@ -1,13 +1,11 @@
 {% extends 'stores/base.html' %}
 
+{% load crispy_forms_tags %}
+
 
 {% block title %}更新 {{ store.name }} | {{ block.super }}{% endblock title %}
 
 
 {% block content %}
-<form action="" method="post" role="form">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn btn-primary">更新</button>
-</form>
+{% crispy form %}
 {% endblock content %}
