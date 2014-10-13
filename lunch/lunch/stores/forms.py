@@ -8,6 +8,7 @@ class StoreForm(forms.ModelForm):
 
     class Meta:
         model = Store
+        fields = ('name', 'notes',)
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)

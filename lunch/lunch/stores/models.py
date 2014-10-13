@@ -1,9 +1,13 @@
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 
 
 class Store(models.Model):
 
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, related_name='owned_stores',
+    )
     name = models.CharField(max_length=20)
     notes = models.TextField(blank=True, default='')
 
