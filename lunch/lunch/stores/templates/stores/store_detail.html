@@ -1,5 +1,7 @@
 {% extends 'stores/base.html' %}
 
+{% load stores_tags %}
+
 {% block title %}{{ store.name }} | {{ block.super }}{% endblock title %}
 
 {% block content %}
@@ -9,7 +11,9 @@
 <form method="post" action="{% url 'store_delete' store.pk %}" class="controls">
   {% csrf_token %}
   <a href="{% url 'store_update' pk=store.pk %}" class="btn btn-default">更新店家資訊</a>
+  {% if store|deletable:user %}
   <input type="submit" value="刪除" class="btn btn-danger">
+  {% endif %}
 </form>
 
 <table class="table">

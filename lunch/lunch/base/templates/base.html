@@ -1,3 +1,5 @@
+{% load staticfiles %}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,5 +32,10 @@
 </nav>
 
 {% endblock body %}
+
+<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="{% static 'base/js/base.js' %}"></script>
+{% block js %}{% endblock js %}
+
 </body>
 </html>

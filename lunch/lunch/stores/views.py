@@ -1,4 +1,4 @@
-from django.http import Http404, HttpResponseForbidden
+from django.http import Http404, HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
@@ -51,14 +51,15 @@ def store_update(request, pk):
 
 
 @login_required
-@require_http_methods(['POST'])
+@require_http_methods(['POST', 'DELETE'])
 def store_delete(request, pk):
     try:
         store = Store.objects.get(pk=pk)
     except Store.DoesNotExist:
         raise Http404
-    if (not store.owner or store.owner == request.user
-            or request.user.has_perm('store_delete')):
+    if store.can_user_delete(request.user):
         store.delete()
+        if request.is_ajax():
+            return HttpResponse()
         return redirect('store_list')
     return HttpResponseForbidden()
