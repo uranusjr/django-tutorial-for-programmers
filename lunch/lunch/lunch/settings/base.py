@@ -26,6 +26,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = (
     'pages',
+    'events',
     'stores',
     'base',
     'crispy_forms',
