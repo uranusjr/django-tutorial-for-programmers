@@ -8,7 +8,7 @@ class Store(models.Model):
     def can_user_delete(self, user):
         if not self.owner or self.owner == user:
             return True
-        if user.has_perm('store_delete'):
+        if user.has_perm('stores.delete_store'):
             return True
         return False
 ```
