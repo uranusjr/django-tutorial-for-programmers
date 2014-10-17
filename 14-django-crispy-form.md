@@ -153,7 +153,8 @@ class StoreForm(forms.ModelForm):
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.add_input(Submit('submit', submit_title))
+        if submit_title:
+            self.helper.add_input(Submit('submit', submit_title))
 ```
 
 如果你不太熟悉 Python 語法，`args` 與 `kwargs` 代表[可變參數](http://www.cnblogs.com/fengmk2/archive/2008/04/21/1163766.html)。我們在這裡使用它們，以免得需要寫出所有 `ModelForm` 的 init 參數——反正我們用不到，只想把它們 relay 進 `super().__init__` 而已。`submit_title` 是一個 [keyword-only argument](http://blog.gahooa.com/2009/12/08/python-has-keyword-only-parameters/)，代表我們必須在呼叫時明確指定它的名稱，而不能直接傳。這保證我們不會因為誤傳，而不小心覆蓋到 `ModelForm` 原本的 init 參數（除非它也有定義一模一樣名稱的參數——應該不會）。

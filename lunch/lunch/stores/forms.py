@@ -13,4 +13,5 @@ class StoreForm(forms.ModelForm):
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.add_input(Submit('submit', submit_title))
+        if submit_title:
+            self.helper.add_input(Submit('submit', submit_title))
