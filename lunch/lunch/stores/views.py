@@ -44,7 +44,7 @@ def store_update(request, pk):
             store = form.save()
             return redirect(store.get_absolute_url())
     else:
-        form = StoreForm(instance=store, submit_title='建立')
+        form = StoreForm(instance=store, submit_title='更新')
     return render(request, 'stores/store_update.html', {
         'form': form, 'store': store,
     })
