@@ -9,6 +9,7 @@ class EventForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = ('store',)
+        widgets = {'store': forms.HiddenInput}
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)

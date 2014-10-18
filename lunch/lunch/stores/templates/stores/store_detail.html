@@ -1,6 +1,6 @@
 {% extends 'stores/base.html' %}
 
-{% load stores_tags %}
+{% load crispy_forms_tags stores_tags %}
 
 {% block title %}{{ store.name }} | {{ block.super }}{% endblock title %}
 
@@ -26,4 +26,9 @@
     {% endfor %}
   </tbody>
 </table>
+
+{% if user.is_authenticated %}
+{% crispy event_form %}
+{% endif %}
+
 {% endblock content %}
