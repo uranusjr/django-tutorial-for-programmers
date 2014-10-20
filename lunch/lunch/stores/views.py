@@ -4,8 +4,8 @@ from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 from events.forms import EventForm
+from .forms import StoreForm, MenuItemFormSet
 from .models import Store
-from .forms import StoreForm
 
 
 def store_list(request):
@@ -46,13 +46,17 @@ def store_update(request, pk):
         raise Http404
     if request.method == 'POST':
         form = StoreForm(request.POST, instance=store)
-        if form.is_valid():
+        menu_item_formset = MenuItemFormSet(request.POST, instance=store)
+        if form.is_valid() and menu_item_formset.is_valid():
             store = form.save()
+            menu_item_formset.save()
             return redirect(store.get_absolute_url())
     else:
-        form = StoreForm(instance=store, submit_title='更新')
+        form = StoreForm(instance=store, submit_title=None)
+        form.helper.form_tag = False
+        menu_item_formset = MenuItemFormSet(instance=store)
     return render(request, 'stores/store_update.html', {
-        'form': form, 'store': store,
+        'form': form, 'store': store, 'menu_item_formset': menu_item_formset,
     })
 
 

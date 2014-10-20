@@ -1,5 +1,6 @@
 from django import forms
-from .models import Store
+from django.forms.models import inlineformset_factory
+from .models import Store, MenuItem
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 
@@ -15,3 +16,17 @@ class StoreForm(forms.ModelForm):
         self.helper = FormHelper()
         if submit_title:
             self.helper.add_input(Submit('submit', submit_title))
+
+
+BaseMenuItemFormSet = inlineformset_factory(
+    parent_model=Store, model=MenuItem, fields=('name', 'price',), extra=1
+)
+
+
+class MenuItemFormSet(BaseMenuItemFormSet):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
