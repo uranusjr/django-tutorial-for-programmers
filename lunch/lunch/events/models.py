@@ -7,6 +7,9 @@ class Event(models.Model):
 
     store = models.ForeignKey('stores.Store', related_name='events')
 
+    class Meta:
+        get_latest_by = 'pk'
+
     def __str__(self):
         return str(self.store)
 
