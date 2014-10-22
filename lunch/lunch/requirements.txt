@@ -1,0 +1,5 @@
+Django==1.7
+django-braces==1.4.0
+django-crispy-forms==1.4.0
+six==1.8.0
+django-toolbelt
