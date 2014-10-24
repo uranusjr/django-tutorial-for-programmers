@@ -41,6 +41,8 @@ INSTALLED_APPS = (
     'base',
     'braces',
     'crispy_forms',
+    'rest_framework',
+    'tastypie',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -86,3 +88,14 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = reverse_lazy('home')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+
+TASTYPIE_DEFAULT_FORMATS = ('json',)
