@@ -11,6 +11,7 @@ urlpatterns = patterns(
     url(r'^store/', include('stores.urls')),
     url(r'^accounts/', include('django.contrib.auth.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^api/v1/', include(v1.urls)),
     url(r'^api/', include(v2.urls)),
 )

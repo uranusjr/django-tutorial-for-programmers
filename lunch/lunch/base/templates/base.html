@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load i18n staticfiles %}
 
 <!DOCTYPE html>
 <html>
@@ -22,10 +22,18 @@
         {% if user.is_authenticated %}
         {% csrf_token %}
         <input type="hidden" name="next" value="{% url 'home' %}">
-        <input class="btn btn-default" type="submit" value="登出">
+        <input class="btn btn-default" type="submit" value="{% trans 'Log out' %}">
         {% else %}
-        <a class="btn btn-default" href="{% url 'login' %}">登入</a>
+        <a class="btn btn-default" href="{% url 'login' %}">{% trans 'Log in' %}</a>
         {% endif %}
+      </form>
+      <form class="navbar-form navbar-right" action="{% url 'set_language' %}" method="post">
+        {% csrf_token %}
+        <select name="language" class="form-control language-switch">
+          {% for code, name in LANGUAGES %}
+            <option value="{{ code }}"{% if LANGUAGE_CODE == code %} selected{% endif %}>{{ name }}</option>
+          {% endfor %}
+        </select>
       </form>
     </div>
   </div>

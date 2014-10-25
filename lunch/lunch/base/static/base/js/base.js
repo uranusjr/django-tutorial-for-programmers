@@ -26,4 +26,8 @@ $.ajaxSetup({
   }
 });
 
+$('.language-switch').change(function () {
+  $(this).parent('form').submit();
+});
+
 })(jQuery);
