@@ -1,0 +1,134 @@
+接下來就談一些比較小的題目。
+
+## Logging
+
+Logging 是未來讓你知道程式運作狀況的最好方法。在 web services 中，因為我們沒辦法人力監控伺服器對所有請求的反應，所以 logging 做得好，要飯要…（不對）
+
+總之 logging 很重要。
+
+Django 的 logging 機能主要來自 Python 內建的 `logging` 模組，主要分成四個部分：
+
+1. Loggers 把某個訊息輸入 logging system。Python 提供五種紀錄級別，以重要性由低而高為：
+    1. `DEBUG` 代表用來 debug 的訊息，通常很低階而且詳盡。
+    2. `INFO` 代表一般性的系統訊息，記錄系統的狀態。
+    3. `WARNING` 代表系統遇到小問題。這一般代表問題本身不見得有大影響，但仍然是意料外，可能是由其他問題造成。
+    4. `ERROR` 代表系統遇到大問題，需要注意。
+    5. `CRITICAL` 代表系統遇到嚴重問題，應該馬上處理。
+2. Handlers 負責處理來到 logging system 內的訊息。它可以把訊息記錄到檔案，輸出到某個裝置，甚至上傳到某個地方等等，隨你開心（你可以自己寫合適的 functions）。Handlers 可以要求只處理某個程度或以上（例如「`ERROR` 以上」代表「`ERROR` 與 `CRITICAL`」）的訊息，且只會「反應」而不會「消化」訊息，所以同一條訊息可以同時被很多 handlers 處理。
+3. Filters 可以進一步篩選你想要的訊息。例如你可以要求某個 handler 只處理「來自 email 系統」的訊息（然後再用 handler 中的設定調整接收訊息的層級）。
+4. Formatters 用來把訊息轉成文字。你可以用它來為紀錄加上時間戳記等等。
+
+例如，假設我們要在使用者建立新店家時，紀錄一個 info level log，就可以這麼做：
+
+```python
+# stores/views.py
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+def store_create(request):
+    # ...
+    store.save()
+    logger.info('New store {store} created by {user}!'.format(
+        store=store, user=request.user
+    ))
+    # ...
+```
+
+取得 logger 時，我們需要給一個名稱，已取得（或建立，如果尚不存在）對應的 logger instance。在 Django 中，通常習慣為每個檔案建立自己的 logger，其名稱就是 `__name__`（模組名稱）。但你也可以用自己喜歡的方法來命名 logger，好分類你的 logging messages。Logger 的名稱是有階層順序的，例如如果你有兩個 loggers，分別長這樣：
+
+```python
+logger1 = logging.getLogger('stores.views.create')
+logger2 = logging.getLogger('stores.views')
+```
+
+那麼 `logger1` 的 logs 會 propagate 到 `logger2`。同理，如果你有另一個 logger 名稱是 `stores`，則 `logger1` 與 `logger2` 的 logs 都會 propagate 到那裡！
+
+Django 的設定檔中提供了一個 `LOGGING` 設定，讓你可以調整 logging system 的行為。下面是一個範例：
+
+```python
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(os.path.dirname(BASE_DIR), 'lunch.log'),
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+```
+
+Django 預設提供了兩個 handlers：當 `DEBUG` 是 `True` 時，所有的 log messages 都會被送到 stdout，而當 `DEBUG` 是 `False` 時，所有 `ERROR` 層級以上的訊息會用 email 寄到 admin 的信箱（你必須另外設定 `ADMIN` 與相關 email 伺服設定，才能正確寄出）。你可以用 `disable_existing_loggers` 來設定是要完全取消這些內建 handlers，還是要保留它們，只是加上一些你自己的 handlers。
+
+在設定 loggers 時，首先你要用 `handlers` 與 `filters` 子設定來宣告，接著再設定 `loggers` dict，為每一個可能的 logger 設定它們要使用的 `handlers` 等設定。每個 logger 設定的 key 就是該 logger 的名稱，如果名稱是空字串就會是所有 loggers 的 parent，會接收到系統中**所有** propagate 上來的訊息。
+
+請參考 Python 官方與 Django 官方文件，以了解
+
+* [內建 handler 列表](https://docs.python.org/3/library/logging.handlers.html)。
+* [Django 提供的 loggers、handlers 與 filters](https://docs.djangoproject.com/en/1.7/topics/logging/#django-s-logging-extensions)。
+* [其他範例與說明](https://docs.djangoproject.com/en/1.7/topics/logging/)。
+
+## Data Migration
+
+當你 deploy 上 server 時，必須重新建立 superuser，因為你開發時建立的 superuser 是在本機的資料庫。只是個 superuser 當然沒關係，但如果你有很多 model 資料要輸入，就可以考慮使用 data migration。所以例如我們想要在 deploy 時自動輸入一些新店家，就可以用以下的做法：
+
+首先建立一個新的 migration。
+
+```bash
+python manage.py makemigrations --empty stores
+```
+
+因為我們不是要 Django 自動偵測 schema 改變（並沒有改變啊！）產生 migration，而是要自己寫，所以要加上 `--empty` 參數，讓 Django 產生一個沒有任何行為的 migration file。
+
+這應該會在 `stores/migrations` 目錄中建立一個檔案，名稱類似這樣：
+
+```
+0003_auto_20141025_1144.py
+```
+
+後面那串數字很明顯是現在時間（如果你發現好像時間不太對，可能是因為 Django 用了 UTC 而不是本地時間，所以會差八小時）。但這個名稱其實本身沒有意義，所以你可以隨意修改。一般會保留最前面的四位數字，好讓 migration file 照時間排序就是了。
+
+一個 migration file 裡面必須包含一個 `migrations.Migration` subclass instance。這個 subclass 會宣告兩個東西：
+
+1. Dependencies 告訴 Django 必須在執行這個 migration 前先執行哪些 migrations。每個 migration 是用 `(app 名, migration module 名)` 表示，所以就如前面所說，你的 migration 檔案叫什麼名字都不重要——只要和這裡符合就好了。
+2. Operations 告訴 Django 這個 migration 包含哪些步驟。
+
+我們在這個 migration 中加上一個 operation：
+
+```python
+def create_stores(apps, schema_editor):
+    Store = apps.get_model('stores', 'Store')
+    MenuItem = apps.get_model('stores', 'MenuItem')
+    Store.objects.create(name='肯德基', notes='沒有薄皮嫩雞倒一倒算了啦')
+    mcdonalds = Store.objects.create(name='McDonalds')
+    MenuItem.objects.create(store=mcdonalds, name='大麥克餐', price=99)
+    MenuItem.objects.create(store=mcdonalds, name='蛋捲冰淇淋', price=15)
+    
+class Migration(migrations.Migration):
+    # ...
+    operations = [
+        migrations.RunPython(create_stores),
+    ]
+```
+
+所以當這個 migration 被執行時，就會執行上面的 `create_stores` 函式。在函式中我們建立了兩個店家，並在其中之一建立兩個菜單項目。
+
+不過注意，我們這裡不是使用 import 把 model 定義讀入，而必須使用 `apps.get_model`。這是因為這個 migration 被執行時，model 的定義並不一定與現在相同，所以 Django 會在執行 migration 時動態根據之前的 migration 結果產生 model 定義，並存在傳入的 `apps` 參數中。也因為這個理由，Django 不見得能正確追蹤所有的 model 定義，所以如果你建立物件的過程需要用到一些沒有存在資料庫內的資訊（例如要使用某個 model method），就有可能會出問題。詳情請參照 [migration 官方文件](https://docs.djangoproject.com/en/1.7/topics/migrations/)。
+
+完成之後，執行
+
+```bash
+python manage.py migrate stores
+```
+
+Django 就會自動偵測尚未被使用的 migration 並執行它。所以只要把這個 migration 檔上傳到伺服器上（例如 commit 到 Git repository），再在 server 上 migrate，就可以迅速套用你想要的資料了！

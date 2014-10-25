@@ -1,3 +1,4 @@
+import logging
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect
@@ -6,6 +7,9 @@ from django.contrib.auth.decorators import login_required
 from events.forms import EventForm
 from .forms import StoreForm, MenuItemFormSet
 from .models import Store
+
+
+logger = logging.getLogger(__name__)
 
 
 def store_list(request):
@@ -33,6 +37,9 @@ def store_create(request):
             if request.user.is_authenticated():
                 store.owner = request.user
             store.save()
+            logger.info('New store {store} created by {user}!'.format(
+                store=store, user=request.user
+            ))
             return redirect(store.get_absolute_url())
     else:
         form = StoreForm(submit_title='建立')
