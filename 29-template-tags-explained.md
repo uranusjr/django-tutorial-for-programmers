@@ -62,8 +62,8 @@ divide(do_id(context['foo']))
 ```python
 from django.template.defaultfilters import stringfilter
 
-@stringfilter
 @register.filter
+@stringfilter
 def cut(value, arg):
     return value.replace(arg, '')
 ```
@@ -104,7 +104,7 @@ class NowNode(Node):
         
     def render(self, context):
         format_string = Variable(self.format_string).resolve(context)
-        return now.strftime(format_string)
+        return now().strftime(format_string)
 
 @register.tag(name='now')
 def do_now(parser, token_list):
