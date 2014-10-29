@@ -178,7 +178,7 @@ gunicorn -c gunicorn.conf.py lunch.wsgi
 
 但是這樣我們要手動把 Gunicorn 跑起來才看得到網站，如果用 Ctrl-C 關掉，網站就掛了。最後一個步驟：設定 Supervisor。
 
-Supervisor 是一個
+Supervisor 是一個可以讓使用者監控機器內 processes 的工具。使用者可以把某個想執行的東西註冊進去，要求 supervisor 在特定的時候執行（例如：當你啟動時，請幫我把它也啟動），並使用 Supervisor 提供的介面查看 processes 的運行狀況，或者手動啟動、停止、重啟某個些 processes。
 
 建立 `/etc/supervisor/conf.d/lunch.conf`：
 
@@ -195,7 +195,7 @@ stdout_logfile=/project/supervisor.log
 environment=DJANGO_LUNCH_SECRET_KEY=<your_secret_key>,DJANGO_LUNCH_DATABASE_DEFAULT_USER=<your_db_user>,DJANGO_LUNCH_DATABASE_DEFAULT_PASSWORD=<your_db_pass>,DJANGO_SETINGS_MODULE=lunch.settings.deploy_ubuntu
 ```
 
-這個設定檔定義了一個群組，裡面有一個程式 `site`。這個程式會自動在 Supervisor 啟動時自動開始執行，切換掉 `/poject` 目錄執行適當的 Gunicorn 指令。`environment` 設定指名了需要的環境變數。
+這個設定檔定義了一個群組，裡面有一個程式 `site`。這個程式會自動在 Supervisor 啟動時自動開始執行，切換到 `/poject` 目錄執行適當的 Gunicorn 指令。`environment` 設定指名了需要的環境變數。
 
 現在我們讓 Supervisor 讀進這個設定：
 
