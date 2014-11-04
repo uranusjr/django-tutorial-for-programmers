@@ -52,23 +52,7 @@ class MenuItem(models.Model):
 
 現在程式已經可以認得這兩種 models 了。但如果要儲存它們，還需要在資料庫裡建立對應的 tables。確保資料庫與程式中的定義同步，是件很麻煩的工作；幸好，Django 提供了一個自動同步資料表的工具，可以協助我們完成這個工作。
 
-首先我們要讓 Django 知道這些 models 存在。打開 `lunch/settings/base.py`，把 `stores` 這個 app 加入 `INSTALLED_APPS` 列表：
-
-```python
-INSTALLED_APPS = (
-    'stores',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-)
-```
-
-Django 並沒有硬性規定 app 的順序，不過我個人喜歡把自己的 apps 排在內建 apps 前面。大致上的規則是，前面的 app 可以 depend on 後面，但是後面不可以 depend 前面。
-
-存檔後，在 console 執行以下指令：
+在 console 執行以下指令：
 
 ```bash
 python manage.py makemigrations stores

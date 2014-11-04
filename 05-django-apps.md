@@ -14,7 +14,7 @@ Django 自稱 MTV 框架，把自己分成三個部分：models、templates、vi
 
 我們可以使用 Django 內建的使用者認證功能處理第一部分，所以這先放著。第二與第三部分功能基本上是分開的（雖然第三部分會需要用到第二部分的功能），所以在 Django 中，我們會把它們各自放在不同的 **app** 裡面。如果你使用過其他 web 框架，可能會覺得這個名稱很怪——app 不是應該代表整個網站嗎？嗯，不管怎樣，反正在 Django 中，網站叫做 *project*，而組成網站的元件則是 *app*。習慣就好。每個 Django app 事實上也會是個完整的 Python module，所以可以獨立變成一個可安裝的 Python 函式庫。所以在 Django 中，很重視各 app 之間的獨立性。當然 app 可以 depend on 另一個 app，但兩個 apps 不應該互相需要對方；責任必須劃分清楚。不過這應該是很基本的設計概念吧。
 
-我們現在開始來實作第二部分。Django 提供了一個指令，可以方便你建立 app：
+現在開始來實作第二部分。Django 提供了一個指令，可以方便你建立 app：
 
 ```bash
 python manage.py startapp stores
@@ -22,7 +22,23 @@ python manage.py startapp stores
 
 這會建立一個叫 `stores` 的目錄，用來包裝我們的 app（其名稱就是 `stores`）。在 Django 中，通常習慣把 app 取名為它主要功能的 model 的複數形。這個 app 主要負責的是管理店家，所以我們會把主要的 model 取名為 `Store`。所以 app 名稱就是 stores 了。注意 Python 習慣把 module 取名為全小寫（可以使用底線），而既然 Django app 本身是 Python module，所以也應該遵從相同的命名規則。
 
-來看看你的專案目錄：
+我們還要讓 Django 知道這個 app 的存在。打開 `lunch/settings/base.py`，把 `stores` 這個 app 加入 `INSTALLED_APPS` 列表：
+
+```python
+INSTALLED_APPS = (
+    'stores',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+)
+```
+
+Django 並沒有硬性規定 app 的順序，不過我個人喜歡把自己的 apps 排在內建 apps 前面。大致上的規則是，前面的 app 可以 depend on 後面，但是後面不可以 depend 前面。
+
+現在看看你的專案目錄：
 
 ```
 lunch
@@ -45,7 +61,7 @@ lunch
 └── manage.py
 ```
 
-來看看 `stores` 裡面各項目的用途：
+`stores` 裡面各項目的用途如下：
 
 * `migrations` 用來存放 database migration，也就是資料庫結構改變的資料。這些檔案通常不會直接被執行，而是在你透過 Django 指令改變資料庫結構時，用來提示 Django 你的資料在某個時間點的結構。
 * `admins.py` 是用來設定 Django admin。先跳過。
