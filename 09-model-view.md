@@ -84,7 +84,7 @@ def store_list(request):
 
 我們看到了一組新的 template tags `for` 與 `endfor`。這是 Django templates 中表示迴圈的方法，對 Python programmers 而言這應該不難理解。在 templates 裡沒辦法用縮排表示階層，所以我們是用一個 `endfor` 標籤來標示迴圈結束。取用物件內 attributes 的方法仍然是用一個點，不過我們必須在旁邊加上兩組大括弧，來標注這是 template 語法，而不是真的要在 HTML 中印出 `store.name` 這個字串。
 
-把 server 跑起來，你應該可以在 <http://localhost:8000/stores/> 看到列表頁。不錯吧！接著是每個店家的獨立頁面。
+把 server 跑起來，你應該可以在 <http://localhost:8000/store/> 看到列表頁。不錯吧！接著是每個店家的獨立頁面。
 
 第一件事情：我們要規劃如何把網址對應到合適的頁面。Django 的做法就是用 capturing groups：
 
