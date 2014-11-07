@@ -255,8 +255,74 @@ urlpatterns = patterns(
 
 對了，你可能已經注意到，Django REST Framework 提供了一系列很方便的 HTML API test views，而 Tastypie 基本上在測試時只能靠額外的 client（例如 cURL）來使用。或許這也是誘因之一，雖然我個人習慣都用 unit tests 來測試，所以這部分比較無感。
 
+## Deployment
+
+最後我們來把今天更新的東西部署到伺服器上面去。首先把新安裝的套件加入 `requirements.txt`：
+
+```
+django-tastypie
+djangorestframework
+```
+
+我們在 deploy 到 Ubuntu server 那章也提過，這個 requirements 檔案其實就是用來列出所有需要的套件，方便你用 `pip install -r` 一次裝好。所以當我們有新安裝任何套件時，就應該更新這裡的內容。[註 2]
+
+### Heroku
+
+把今天的內容 commit 進 Git repository：
+
+```bash
+git add .
+git commit -m "Add REST API"
+```
+
+然後 push 上去：
+
+```bash
+git push heroku master
+```
+
+這樣應該就行了！Heroku 應該會把剩下的設定完成。
+
+### Ubuntu Server
+
+把新版的專案上傳上去之後，同樣進入 venv 並設定環境變數：
+
+```bash
+. venv/lunch/bin/activate
+export DJANGO_LUNCH_SECRET_KEY=<your_secret_key>
+export DJANGO_LUNCH_DATABASE_DEFAULT_USER=<your_db_user>
+export DJANGO_LUNCH_DATABASE_DEFAULT_PASSWORD=<your_db_pass>
+export DJANGO_SETINGS_MODULE=lunch.settings.deploy_ubuntu
+```
+
+然後用 PIP 把 requirements file 的更新安裝進去：
+
+```bash
+pip install -r lunch/requirements.txt
+```
+
+注意到 PIP 會自動跳過你已經安裝的套件，所以這裡只會安裝兩個新的（Tastypie 和 Django REST Framework）。
+
+Migrate 資料庫（Tastypie 有用到）與收集靜態檔（Django REST Framework 的網頁 API view 需要）：
+
+```bash
+python manage.py migrate
+python manage.py collectstatic
+```
+
+然後要求 Supervisor 重開你的 instance，並重啟 nginx（後者其實不一定需要）：
+
+```bash
+sudo supervisorctl restart lunch:site
+sudo service nginx restart
+```
+
+就完成了！
+
 唔，這篇好長。不過應該都是滿直觀的內容，只要有文件可以查應該都不難理解。就到這邊吧。
 
 ---
 
 註 1：還有一些額外的，但我們關心的只有這些。
+
+註 2：如果想瞭解更詳細的 requirements file 語法與使用技巧，可以參照 PIP 的[官方文件](http://pip.readthedocs.org/en/latest/user_guide.html#requirements-files)。
