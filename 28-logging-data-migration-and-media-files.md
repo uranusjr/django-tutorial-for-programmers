@@ -132,3 +132,67 @@ python manage.py migrate stores
 ```
 
 Django 就會自動偵測尚未被使用的 migration 並執行它。所以只要把這個 migration 檔上傳到伺服器上（例如 commit 到 Git repository），再在 server 上 migrate，就可以迅速套用你想要的資料了！
+
+## Media Files
+
+回顧一下 deploy to Ubuntu 的內容：
+
+> `MEDIA_ROOT` 的作用與 `STATIC_ROOT` 類似，只是它是用來告訴 Django 當使用者上傳檔案時，應該把檔案放在哪裡。這裡我們單純就只是把它放在外面一層的 `media` 目錄裡，但你可以設定 NFS 或者各式各樣的服務來用，只要 Django 找得到就行了。
+
+所以加了這行之後，你就可以用 Django 處理使用者的檔案上傳。我們在教學中沒有提到，不過如果你想在 form 中讓使用者上傳檔案（HTML 的 `<input type="file">`），就可以使用 [`django.forms.FileField`](https://docs.djangoproject.com/en/dev/ref/forms/fields/#filefield)，也可以配合 [`django.db.models.FileField`](https://docs.djangoproject.com/en/dev/ref/models/fields/#django.db.models.FileField) 來把圖片資訊存入資料庫。
+
+等等，存入資料庫？大家不是都說**不要**把 binary data 存進資料庫嗎？其實 Django 在處理檔案時，只會在資料庫存入檔案**路徑**。檔案本身則會被存入你在 `MEDIA_ROOT` 中指定的位置。[註 1]
+
+這個檔案在 HTML 裡的 URL 就要靠 `MEDIA_URL` 設定來處理。如果你這樣設定：
+
+```python
+MEDIA_ROOT = '/home/django/media'
+
+MEDIA_URL = 'http://tw.pyconusercontent.org/'
+```
+
+那麼 `/home/django/media/PyCon_Day1-720.jpg` 這個檔案就會被對應到 `http://tw.pyconusercontent.org/PyCon_Day1-720.jpg`（沒有這個網址，不用試了）。
+
+這裡有個特殊狀況：如果你只是想把 media file 上傳到「目前這台機器」（亦即你的 media server 和 web server 是同一台機器），就可以像這樣設定：
+
+```python
+MEDIA_ROOT = '/home/django/media'
+
+MEDIA_URL = '/media/'
+```
+
+然後直接在 web server 做 alias。例如如果你用 nginx：
+
+```
+server {
+    # ...
+    location /media/ {
+        alias           /home/django/media/;
+    }
+    # ...
+}
+```
+
+就不需要在設定檔指定 host name。但如果你這麼做，就需要自己在開發機上的 URL config 設定 media URL——不然 Django 根本不知道要去哪裡找你的 media file。
+
+一般的設定長這樣子：
+
+```python
+# lunch/urls.py
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+# 和原本一樣。
+
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+    )
+```
+
+如果是在 debug 模式，則多加上一組 URL pattern，把 `MEDIA_URL` 對應到 `MEDIA_ROOT`。Django 提供了 `static` function 來自動產生這個 pattern，所以我們只要這樣呼叫即可（事實上 Django 在 debug 模式中就是用完全相同的方法找到你的 static files）。
+
+---
+
+註 1：如果不想存在 `MEDIA_ROOT` 而是想放在裡面的子目錄，或者你有自動修改檔名之類特殊需求，還可以另外設定 `upload_to` 參數。
