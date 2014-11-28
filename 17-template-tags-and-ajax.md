@@ -32,11 +32,11 @@ def store_delete(request, pk):
 {{ store.can_user_delete(user) }}
 ```
 
-餓，好像不行。因為 Django 不允許在 template 中呼叫帶引數的 methods。為了這個目的，我們必須實作一個 template tag。
+呃，好像不行。因為 Django 不允許在 template 中呼叫帶引數的 methods。為了這個目的，我們必須實作一個 template tag。
 
-我們前面已經看過幾個 template tags：內建的 `urls`、`for`、`extends` 等等都是。我們也看過第三方的元件，例如 Django Crispy Forms 的 `crispy` tag 與 filter。不過這些東西究竟是怎麼寫的？
+我們前面已經看過幾個 template tags，例如內建的 `urls`、`for`、`extends` 等等，以及來自 Django Crispy Forms 的 `crispy` tag 與 filter。不過這些東西究竟是怎麼寫的？
 
-在 `stores` 目錄下建立 `templatetags` 目錄，在裡面新增兩個檔案：`__init__.py` 與 `stores_tags.py`。在後者輸入以下內容：
+在 `stores` 目錄下建立 `templatetags` 目錄，於其中新增兩個檔案：`__init__.py` 與 `stores_tags.py`。接著在後者輸入以下內容：
 
 ```python
 from django.template import Library
@@ -87,7 +87,7 @@ Django template tag/filter 其實就是 Python function，只是我們要用一�
 <!-- ... -->
 ```
 
-接著是第二步。我們要寫 JavaScript 了。首先把 jQuery 加進來，然後新增一個 block：
+接著是第二步——我們要寫 JavaScript 了。首先把 jQuery 加進來，然後新增一個 block：
 
 ```html
 {# base/templates/base.html #}
@@ -100,7 +100,7 @@ Django template tag/filter 其實就是 Python function，只是我們要用一�
 </html>
 ```
 
-接著我們要來寫 Ajax⋯⋯不，等等！我們還得做一件事情。還記得 Django 會檢查 CSRF token 嗎？當你使用 Ajax 時，它還是會檢查。所以我們必須多做一些設定。幸好 Django 官方文件就有[教你怎麼做](https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#ajax)。不過這要放哪裡？
+接著我們要來實作 Ajax⋯⋯不，等等！我們還得做一件事情。還記得 Django 會檢查 CSRF token 嗎？當你使用 Ajax 時，它還是會檢查。所以我們必須多做一些設定。幸好 Django 官方文件就有[教你怎麼做](https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#ajax)。不過這要放哪裡？
 
 Django 把網站中不是動態產生的檔案統稱為 static files，並用 `django.contrib.staticfiles` 來管理它們。管理的邏輯和 templates 很像。我們來建立一個 `base.js`。首先建立 `base/static/base/js/` 目錄，並在其中建立一個 `base.js`，然後把官方文件中的範例程式碼抄進去：
 
@@ -149,7 +149,7 @@ $.ajaxSetup({
 
 可以看到路徑的邏輯也和 template 很像。
 
-在設定 CSRF token 後，我們就可以實作第二步與第四步。同樣在 `stores` 目錄中也建立 static 目錄，加入以下檔案：
+設定 CSRF token 後，我們就可以實作第二步與第四步。同樣在 `stores` 目錄中也建立 static 目錄，加入以下檔案：
 
 ```javascript
 // stores/static/stores/js/store_list.js
