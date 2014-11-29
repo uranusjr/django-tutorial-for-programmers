@@ -76,7 +76,7 @@ class MenuItem(models.Model):
     class Meta:
         verbose_name = _('Menu item')
         verbose_name_plural = _('Menu items')
-        
+
     # ...
 ```
 
@@ -175,7 +175,7 @@ urlpatterns = patterns(
 
 ```html
 {% load i18n %}
-<input type="submit" value="{% trans 'Submit' %}">
+<button type="submit">{% trans 'Submit' %}</button>
 ```
 
 這些函式還有許多變體，例如可以根據一個額外參數切換單複數的 `ungettext` 系列，以及字串 format 的用法，例如：

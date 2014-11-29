@@ -22,7 +22,7 @@
         {% if user.is_authenticated %}
         {% csrf_token %}
         <input type="hidden" name="next" value="{% url 'home' %}">
-        <input class="btn btn-default" type="submit" value="{% trans 'Log out' %}">
+        <button class="btn btn-default" type="submit">{% trans 'Log out' %}</button>
         {% else %}
         <a class="btn btn-default" href="{% url 'login' %}">{% trans 'Log in' %}</a>
         {% endif %}

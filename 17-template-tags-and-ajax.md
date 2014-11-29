@@ -58,7 +58,7 @@ Django template tag/filter 其實就是 Python function，只是我們要用一�
 {% load stores_tags %}
 
 {% if store|deletable:user %}
-<input type="submit" value="刪除" class="btn btn-danger">
+<button type="submit" class="btn btn-danger">刪除</button>
 {% endif %}
 ```
 

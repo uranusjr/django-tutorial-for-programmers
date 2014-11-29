@@ -115,7 +115,7 @@ url(r'^(?P<pk>\d+)/delete/$', views.store_delete, name='store_delete'),
 ```html
 <form method="post" action="{% url 'store_delete' store.pk %}">
   {% csrf_token %}
-  <input type="submit" value="刪除" class="btn btn-danger">
+  <button type="submit" class="btn btn-danger">刪除</button>
 </form>
 ```
 

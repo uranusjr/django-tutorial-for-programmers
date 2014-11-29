@@ -51,7 +51,7 @@ urlpatterns = patterns(
         {% if user.is_authenticated %}
         {% csrf_token %}
         <input type="hidden" name="next" value="{% url 'home' %}">
-        <input class="btn btn-default" type="submit" value="登出">
+        <button class="btn btn-default" type="submit">登出</button>
         {% else %}
         <a class="btn btn-default" href="{% url 'login' %}">登入</a>
         {% endif %}
@@ -78,7 +78,7 @@ urlpatterns = patterns(
       <form method="post">
       {% csrf_token %}
       {{ form|crispy }}
-      <input type="submit" name="submit" value="登入" class="btn btn-primary">
+      <button type="submit" class="btn btn-primary">登入</button>
       </form>
     </div>
   </div>
@@ -105,7 +105,7 @@ LOGIN_REDIRECT_URL = reverse_lazy('home')
   {% if user.is_authenticated %}
   {% csrf_token %}
   <input type="hidden" name="next" value="{% url 'home' %}">
-  <input class="btn btn-default" type="submit" value="登出">
+  <button class="btn btn-default" type="submit">登出</button>
   {% else %}
   <a class="btn btn-default" href="{% url 'login' %}">登入</a>
   {% endif %}

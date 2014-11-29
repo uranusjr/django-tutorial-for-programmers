@@ -45,7 +45,7 @@ def store_update(request, pk):
 
 from django.forms.models import inlineformset_factory
 from .models import MenuItem
-    
+
 BaseMenuItemFormSet = inlineformset_factory(
     parent_model=Store, model=MenuItem, fields=('name', 'price',), extra=1
 )
@@ -68,7 +68,7 @@ def store_update(request, pk):
         store = Store.objects.get(pk=pk)
     except Store.DoesNotExist:
         raise Http404
-    
+
     if request.method == 'POST':
         form = StoreForm(request.POST, instance=store, submit_title='更新')
 
@@ -99,7 +99,7 @@ def store_update(request, pk):
 <form method="post">
   {% crispy form %}
   {% crispy menu_item_formset %}
-  <input type="submit" class="btn btn-primary" value="更新">
+  <button type="submit" class="btn btn-primary">更新</button>
 </form>
 ```
 
@@ -131,7 +131,7 @@ def store_update(request, pk):
 {% block content %}
 <form method="post">
   {% crispy form %}
-  
+
   <!-- 手動一個一個產生 formset 中的 forms，並在它們外面包一層 div -->
   {{ menu_item_formset.management_form }}
   {% for form in menu_item_formset %}
@@ -139,10 +139,10 @@ def store_update(request, pk):
       {% crispy form menu_item_formset.helper %}
     </div>
   {% endfor %}
-  
+
   <!-- 增加這行 -->
   <a href="#" class="menu-item-add btn btn-default">新增菜單項目</a>
-  <input type="submit" class="btn btn-primary" value="更新">
+  <button type="submit" class="btn btn-primary">更新</button>
 </form>
 {% endblock content %}
 
