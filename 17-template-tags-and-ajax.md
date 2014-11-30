@@ -50,19 +50,26 @@ def deletable(store, user):
 
 Django template tag/filter 其實就是 Python function，只是我們要用一個 decorator 把它註冊到 template system 裡，才能被 Django 辨識。這個 filter 的作用其實就只是把 `can_user_delete` 包起來。
 
-用法就和一般的 template tag/filter 一樣：
+用法就和一般的 template tag/filter 一樣。在 detail view 中加上下面這行，引入我們剛剛做的 template tag library：
 
 ```html
-{# stores/templates/stores/store_detail.html #}
-
 {% load stores_tags %}
-
-{% if store|deletable:user %}
-<button type="submit" class="btn btn-danger">刪除</button>
-{% endif %}
 ```
 
-這樣我們就實作完成 detail view 的刪除了。現在我們想在列表頁也加上同樣的東西。不過這次我們來用 Ajax 實作。我們想要做到：
+然後用一個 `if` tag 把原本的刪除按鈕包起來。完成之後，你的 delete form 應該會長得像這樣：
+
+```html
+<form method="post" action="{% url 'store_delete' store.pk %}">
+  {% csrf_token %}
+  {% if store|deletable:user %}
+  <button type="submit" class="btn btn-danger">刪除</button>
+  {% endif %}
+</form>
+```
+
+就實作完成 detail view 的刪除了。現在只有當使用者確實可以刪除某個店家時，才能看到刪除按鈕。問題解決！
+
+接著在列表頁也加上類似的東西。不過這次我們來用 Ajax 實作。我們想要做到：
 
 1. 在列表頁的每個店家旁邊都增加一個刪除按鈕（如果使用者可以刪除該店家）。
 2. 按下按鈕後，用 Ajax 發一個 DELETE request。
