@@ -4,7 +4,7 @@
 
 之前也提過另一個很方便的網站 <http://ccbv.co.uk>。如果你用它一段時間，可能會覺得有時候直接看 source code 還比讀文件方便（畢竟 Python 的可讀性實在太高）。CCBV 只提供 generic class-based views 的源碼，但如果你想看的其他部分，可以直接讀 [Django 在 GitHub 上的官方 repository](https://github.com/django/django/tree/master/django)。當然如果你喜歡離線看，也可以 clone 一份回來，不過要注意不論線上還是 clone 都預設是在 master branch 上。在你看這篇文章的同時，Django 仍然持續在開發，所以你專案使用的版本不會和它一樣，所以要 checkout 到正確的 tag 才行，否則你看的內容會不準。
 
-在討論區方面，Django 算是比較 old-fashioned。你可以加入 [django-users mailing list](https://groups.google.com/forum/#!forum/django-users)，或者，如果你喜歡 IRC，可以上 <chat.freenode.net> 的 #django channel，如果時間段對的話（美國上班時間到晚上）應該都頗容易迅速得到答案。不過 #django channel 需要[認證 nickname](http://epttformosa.conic.me/interaction/irc/ircreg) 才能進入，必須注意。這些地方當然都是講英文，不過 Django Community 的人基本上都還滿 nice 的（他們有認真在維護社群文化，不像 Linux 社群嗯…），所以不需要太擔心，勇敢問下去就對了！
+在討論區方面，Django 算是比較 old-fashioned。你可以加入 [django-users mailing list](https://groups.google.com/forum/#!forum/django-users)，或者，如果你喜歡 IRC，可以上 <irc://chat.freenode.net> 的 #django channel，如果時間段對的話（美國上班時間到晚上）應該都頗容易迅速得到答案。不過 #django channel 需要[認證 nickname](http://epttformosa.conic.me/interaction/irc/ircreg) 才能進入，必須注意。這些地方當然都是講英文，不過 Django Community 的人基本上都還滿 nice 的（他們有認真在維護社群文化，不像 Linux 社群嗯…），所以不需要太擔心，勇敢問下去就對了！
 
 在中文方面，目前最好的教學應該是 Django Girls Taipei 的[課前準備](http://djangogirlstaipei.herokuapp.com/tutorials/)與[官方教學](http://djangogirlstaipei.gitbooks.io/django-girls-taipei-tutorial/)。也有人[翻譯了 Django Girls 英文版教學](http://carolhsu.gitbooks.io/django-girls-tutorial-traditional-chiness/)（內容與 Django Girls Taipei 用的教學不同）；英文版 Django Girls 教學的內容比起台北版稍微多一些，對於單日 workshop 有點硬，但是如果你按自己的步調練習，仍然是十分優秀。
 
