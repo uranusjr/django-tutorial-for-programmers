@@ -2,7 +2,7 @@
 
 首先當然是 Django 官方文件。這一個月來應該也看過一堆連結指向官網了，但你也可以直接前往 <https://docs.djangoproject.com/> 閱讀文件。不過 Django 官方文件豐富歸豐富，如果你要找某個特定的東西（某個函式，或甚至某個參數之類的），或者想要交叉參照很多部分，可能就不是很好用；官網本身就有個搜尋，不過我推薦可以善用 Google 的 `site:` 參數，找起來會更方便。
 
-之前也提過另一個很方便的網站 <http://ccbv.co.uk>。如果你用它一段時間，可能會覺得有時候直接看 source code 還比讀文件方便（畢竟 Python 的可讀性實在太高）。CCBV 只提供 generic class-based views 的源碼，但如果你想看的其他部分，可以直接讀 [Django 在 GitHub 上的官方 repository](https://github.com/django/django/tree/master/django)。當然如果你喜歡離線看，也可以 clone 一份回來，不過要注意不論線上還是 clone 都預設是在 master branch 上。在你看這篇文章的同時，Django 仍然持續在開發，所以你專案使用的版本不會和它一樣，所以要 checkout 到正確的 tag 才行，否則你看的內容會不準。
+之前也提過另一個很方便的網站 <http://ccbv.co.uk>。這個網站有個很方便的地方，是可以直接看直接在看文件時，同時對照某個元件的 source code。或許你有時候還會覺得讀源碼比讀文件更方便（畢竟 Python 的可讀性實在太高）！CCBV 只提供 generic class-based views 的源碼，但如果你想看的其他部分，可以直接讀 [Django 在 GitHub 上的官方 repository](https://github.com/django/django/tree/master/django)。如果你希望離線看，也可以 clone 一份回來。不過要注意：不論線上還是 clone 回來的源碼，預設都是在 master branch 上；在你看這篇文章的同時，Django 仍然持續在開發，你在專案中使用的版本常常和 master branch 的內容有差異。所以你必須 checkout 到正確的 tag 才行。
 
 在討論區方面，Django 算是比較 old-fashioned。你可以加入 [django-users mailing list](https://groups.google.com/forum/#!forum/django-users)，或者，如果你喜歡 IRC，可以上 <irc://chat.freenode.net> 的 #django channel，如果時間段對的話（美國上班時間到晚上）應該都頗容易迅速得到答案。不過 #django channel 需要[認證 nickname](http://epttformosa.conic.me/interaction/irc/ircreg) 才能進入，必須注意。這些地方當然都是講英文，不過 Django Community 的人基本上都還滿 nice
 的（他們有認真在維護社群文化，不像 Linux 社群嗯…），所以不需要太擔心，勇敢問下去就對了！

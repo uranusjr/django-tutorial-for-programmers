@@ -11,3 +11,9 @@
 若您為本專案提交任何 pull requests 或任何對專案之貢獻，即代表您已認可上述授權，並允許您的貢獻以同樣授權進行散佈。
 
 [Creative Commons 姓名標示 3.0 台灣]: http://creativecommons.org/licenses/by/3.0/tw/
+
+## 有問題？
+
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/uranusjr/django-tutorial-for-programmers?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+如果你遇到任何問題，可以上這個 repository 的 [Gitter 聊天室](https://gitter.im/uranusjr/django-tutorial-for-programmers)發問。我有空會盡量回答。如果你有興趣，也歡迎進來幫忙，或者討論任何 Django 相關的主題！
