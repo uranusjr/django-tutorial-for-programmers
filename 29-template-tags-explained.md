@@ -1,17 +1,17 @@
-今天我們來談談 Django 的 template tags 背後的原理。Django 在 `django.template` 子模組中實作了一個 [recursive descent parser](http://en.wikipedia.org/wiki/Recursive_descent_parser)，當你的 template 被讀入時，會經過這個 parser 處理成 [AST](http://zh.wikipedia.org/wiki/抽象語法樹)，接著再由一個 renderer 將這個 AST 輸出成字串。你寫的所有內容都會被轉化成下列其中之一：
+今天我們來談談 Django 的 template tags 背後的原理。Django 在 `django.template` 子模組中實作了一個 [recursive descent parser](http://en.wikipedia.org/wiki/Recursive_descent_parser)。當你的 template 被讀入時，會經過這個 parser 處理成 [AST](http://zh.wikipedia.org/wiki/抽象語法樹)，接著一個 renderer 負責將這個 AST 輸出成字串。在產生 AST 時，template 中的所有內容都會被轉化成下列其中之一：
 
-1. 用 `{% ... %}` 語法寫出的元件代表一個 block 的開始或結束（或者一整個 block 本身）。Django 會根據該元件宣告時的定義，收集整個 block 中的資訊，轉為一個 *block token*。這是唯一一種內部可以有 child tokens 的元件。
+1. 用 `{% ... %}` 語法寫出的元件代表一個 block 的開始或結束（或者一整個 block 本身）。Django 會根據該元件宣告時的定義，收集整個 block 中的資訊，轉為一個 *block token*。這是唯一內部可以有 child tokens 的元件。
 2. 用 `{# ... #}` 寫出的元件會被轉為 *comment token*，代表註解。它會在 template 變成 HTML 時被捨棄。
 3. 用 `{{ ... }}` 寫出的元件會被轉為 *variable token*。Django 會根據裡面的 variable name 從 context 中尋找它的值，再檢查後面有沒有接 filters（`|` 語法），如果有就進行額外的處理，然後輸出。
 4. 其他所有輸入都會成為 *text token*，會直接被輸出。
 
-其中 2. 和 4. 沒什麼好解釋的，我們先來看一個 variable token 的例子：
+其中 2. 和 4. 沒什麼好解釋的。我們來看一個 variable token 的例子：
 
 ```
 {{ foo }}
 ```
 
-這會讓 Django 去 context 中尋找 `foo` 這個變數。如果你的 context 是用下面這個 `dict` 產生的（不論你是用 `render` 之類的函式，或直接用 `django.template.Context` 建構）：
+這會讓 Django 去 context 中尋找 `foo` 這個變數。如果你用下面這個 `dict` 產生 context （不論用 `render` 之類的函式，或直接建構 `django.template.Context` instance）：
 
 ```python
 {
@@ -26,7 +26,7 @@
 <object object at 0x106647070>
 ```
 
-注意 Django 會自動把所有東西都轉成字串。如果在 context 裡沒有對應的 key，則 Django 會**輸出空字串**，這和一般 Python 中如果找不到 key 會 raise KeyError 自爆的行為不太一樣，要注意。
+注意 Django 會自動把所有東西都轉成字串。如果在 context 裡沒有對應的 key，則 Django 會**輸出空字串**。這和 Python 中如果找不到 key 會 raise `KeyError` 的行為不太一樣，要注意。
 
 如果 variable token 中包含 filter syntax，像這樣：
 
@@ -34,7 +34,7 @@
 {{ foo|id|divide:2 }}
 ```
 
-則 Django 會去 registry 找有沒有符合名稱的 filters，如果有就套用（否則會提示錯誤）。假設你的 filters 長這樣：
+則 Django 會去 registry（Django 存放 template 所需資訊的地方）尋找有沒有符合名稱的 filter，如果有就套用（否則會提示錯誤）。假設你有兩個 filters，像這樣：
 
 ```python
 from __future__ import division
@@ -54,7 +54,7 @@ def divide(value, arg):
 那麼 Django 就會把上面的 token 解讀成這樣：
 
 ```python
-divide(do_id(context['foo']))
+divide(do_id(context['foo']), 2)
 ```
 
 注意上面有個重點：如果你不想或不能讓你的 filter 與 function 同名（例如上面的 `id` filter 會蓋掉內建的 `id` function），可以在 `filter` decorator 多加一個 `name` argument（並注意 Django 習慣在這種狀況使用 `do_` prefix）。另外，filter 的輸入值是**還沒被轉成字串**之前的值，所以我們可以直接在 `divide` 中用除法。但如果你的 filter 預期只會處理字串，則可以為你的 function 多加一個 decorator：
@@ -87,7 +87,7 @@ Block tokens 可能有兩種型態。它可以是 self-contained，像這樣：
 ```
 {% upper %}     {# start tag #}
 Hello!
-{% encupper %}  {# end tag #}
+{% endupper %}  {# end tag #}
 ```
 
 不論是哪一種，其實在實作時都分成兩個部分：一個 entry function，以及一個 `Node` subclass。一個 self-contained tag 可以這樣實作：
