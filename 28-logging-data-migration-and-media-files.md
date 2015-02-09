@@ -6,15 +6,15 @@ Logging 是未來讓你知道程式運作狀況的最好方法。在 web service
 
 總之 logging 很重要。
 
-Django 的 logging 機能主要來自 Python 內建的 `logging` 模組，主要分成四個部分：
+Django 的 logging 機能基於 Python 內建的 `logging` 模組。這個模組提供一個完整的 logging 系統，主要分成四個部分：
 
-1. Loggers 把某個訊息輸入 logging system。Python 提供五種紀錄級別，以重要性由低而高為：
+1. Loggers 把某個訊息紀錄（log）進 logging system。Python 提供五種紀錄級別，重要性由低而高：
     1. `DEBUG` 代表用來 debug 的訊息，通常很低階而且詳盡。
     2. `INFO` 代表一般性的系統訊息，記錄系統的狀態。
-    3. `WARNING` 代表系統遇到小問題。這一般代表問題本身不見得有大影響，但仍然是意料外，可能是由其他問題造成。
+    3. `WARNING` 代表系統遇到小問題。這種問題雖然在意料之外，但本身不見得有大影響。
     4. `ERROR` 代表系統遇到大問題，需要注意。
     5. `CRITICAL` 代表系統遇到嚴重問題，應該馬上處理。
-2. Handlers 負責處理來到 logging system 內的訊息。它可以把訊息記錄到檔案，輸出到某個裝置，甚至上傳到某個地方等等，隨你開心（你可以自己寫合適的 functions）。Handlers 可以要求只處理某個程度或以上（例如「`ERROR` 以上」代表「`ERROR` 與 `CRITICAL`」）的訊息，且只會「反應」而不會「消化」訊息，所以同一條訊息可以同時被很多 handlers 處理。
+2. Handlers 負責處理（handle）進入 logging system 的訊息。它可以把訊息記錄到檔案，輸出到某個裝置，甚至上傳到某個地方等等，隨使用者開心（只要提供合適的 functions）。Handlers 可以要求只處理某個程度或以上（例如「`ERROR` 以上」代表「`ERROR` 與 `CRITICAL`」）的訊息，且只會「反應」而不會「消化」訊息，所以同一條訊息可以同時被很多 handlers 處理。
 3. Filters 可以進一步篩選你想要的訊息。例如你可以要求某個 handler 只處理「來自 email 系統」的訊息（然後再用 handler 中的設定調整接收訊息的層級）。
 4. Formatters 用來把訊息轉成文字。你可以用它來為紀錄加上時間戳記等等。
 
@@ -36,7 +36,7 @@ def store_create(request):
     # ...
 ```
 
-取得 logger 時，我們需要給一個名稱，已取得（或建立，如果尚不存在）對應的 logger instance。在 Django 中，通常習慣為每個檔案建立自己的 logger，其名稱就是 `__name__`（模組名稱）。但你也可以用自己喜歡的方法來命名 logger，好分類你的 logging messages。Logger 的名稱是有階層順序的，例如如果你有兩個 loggers，分別長這樣：
+首先我們需要給一個名稱，以從 loggin frameowkr 中取得一個 logger。我們習慣為每個檔案建立自己的 logger，其名稱就是 `__name__`（模組名稱）。但你也可以用自己喜歡的方法來命名 logger，好分類你的 logging messages。Logger 的名稱有階層順序，例如如果你有兩個 loggers，分別長這樣：
 
 ```python
 logger1 = logging.getLogger('stores.views.create')
@@ -68,11 +68,11 @@ LOGGING = {
 }
 ```
 
-Django 預設提供了兩個 handlers：當 `DEBUG` 是 `True` 時，所有的 log messages 都會被送到 stdout，而當 `DEBUG` 是 `False` 時，所有 `ERROR` 層級以上的訊息會用 email 寄到 admin 的信箱（你必須另外設定 `ADMIN` 與相關 email 伺服設定，才能正確寄出）。你可以用 `disable_existing_loggers` 來設定是要完全取消這些內建 handlers，還是要保留它們，只是加上一些你自己的 handlers。
+Django 預設提供了兩個 handlers：當 `DEBUG` 是 `True` 時，所有的 log messages 都會被送到 `stdout`；而當 `DEBUG` 是 `False` 時，所有 `ERROR` 層級以上的訊息會用 email 寄到 admin 的信箱（必須另外設定 [`ADMINS`](https://docs.djangoproject.com/en/1.7/ref/settings/#admins) 與[相關 email 伺服設定](https://docs.djangoproject.com/en/1.7/topics/email/)，才能正確寄出，這邊不提）。我們可以用 `disable_existing_loggers` 來設定是要完全取消這些內建 handlers，還是要保留它們，只是加上一些自己的 handlers。
 
-在設定 loggers 時，首先你要用 `handlers` 與 `filters` 子設定來宣告，接著再設定 `loggers` dict，為每一個可能的 logger 設定它們要使用的 `handlers` 等設定。每個 logger 設定的 key 就是該 logger 的名稱，如果名稱是空字串就會是所有 loggers 的 parent，會接收到系統中**所有** propagate 上來的訊息。
+在設定 loggers 時，首先你要用 `handlers` 與 `filters` 子設定來宣告，接著再設定 `loggers` dict，為每一個可能的 logger 設定它們要使用的設定。每個 logger 設定的 key 就是該 logger 的名稱，如果名稱是空字串就會是所有 loggers 的 parent，會接收到系統中**所有** propagate 上來的訊息。
 
-請參考 Python 官方與 Django 官方文件，以了解
+請參考 Python 官方與 Django 官方文件，以進一步了解：
 
 * [內建 handler 列表](https://docs.python.org/3/library/logging.handlers.html)。
 * [Django 提供的 loggers、handlers 與 filters](https://docs.djangoproject.com/en/1.7/topics/logging/#django-s-logging-extensions)。
@@ -80,7 +80,7 @@ Django 預設提供了兩個 handlers：當 `DEBUG` 是 `True` 時，所有的 l
 
 ## Data Migration
 
-當你 deploy 上 server 時，必須重新建立 superuser，因為你開發時建立的 superuser 是在本機的資料庫。只是個 superuser 當然沒關係，但如果你有很多 model 資料要輸入，就可以考慮使用 data migration。所以例如我們想要在 deploy 時自動輸入一些新店家，就可以用以下的做法：
+當你 deploy 上 server 時，必須重新建立 superuser，因為開發時建立的 superuser 是在本機的資料庫。只是個 superuser 當然沒關係，但如果我們需要輸入很多 model 資料，就可以考慮使用 data migration 來自動化。舉例而言，如果我們想要在 deploy 時自動輸入一些新店家，就可以用以下的做法：
 
 首先建立一個新的 migration。
 
@@ -88,22 +88,22 @@ Django 預設提供了兩個 handlers：當 `DEBUG` 是 `True` 時，所有的 l
 python manage.py makemigrations --empty stores
 ```
 
-因為我們不是要 Django 自動偵測 schema 改變（並沒有改變啊！）產生 migration，而是要自己寫，所以要加上 `--empty` 參數，讓 Django 產生一個沒有任何行為的 migration file。
-
-這應該會在 `stores/migrations` 目錄中建立一個檔案，名稱類似這樣：
+這會讓 Django 在 `stores/migrations` 目錄裡建立一個檔案，名稱類似這樣：
 
 ```
 0003_auto_20141025_1144.py
 ```
 
-後面那串數字很明顯是現在時間（如果你發現好像時間不太對，可能是因為 Django 用了 UTC 而不是本地時間，所以會差八小時）。但這個名稱其實本身沒有意義，所以你可以隨意修改。一般會保留最前面的四位數字，好讓 migration file 照時間排序就是了。
+我們之前也用過 `makemigrations` 這個指令，但 `--empty` 則是第一次見到。在預設狀況下，Django 會自動偵測專案內 model 的變化，並為它產生對應的 schema migration 指令。但我們這裡並不是要這麼做（而且我們也沒有改 model schema 啊！），只是希望 Django 為我們產生一個 migration 檔案，所以要加上 `--empty` 參數。這樣，Django 就不會自動填入 migration 指令，而為留白讓我們自己寫。
 
-一個 migration file 裡面必須包含一個 `migrations.Migration` subclass instance。這個 subclass 會宣告兩個東西：
+回到剛剛那個檔案。檔名後面那串數字很明顯是現在時間（如果你發現好像時間不太對，可能是因為 Django 用了 UTC 而不是本地時間，所以會差八小時）。但這個檔名本身其實沒有任何意義，所以你可以隨意修改。不過習慣上，我們會保留最前面的四位數字，好讓 migration file 照時間排序。
 
-1. Dependencies 告訴 Django 必須在執行這個 migration 前先執行哪些 migrations。每個 migration 是用 `(app 名, migration module 名)` 表示，所以就如前面所說，你的 migration 檔案叫什麼名字都不重要——只要和這裡符合就好了。
-2. Operations 告訴 Django 這個 migration 包含哪些步驟。
+接著來看內容。每個 migration file 裡面都必須包含一個 `migrations.Migration` subclass instance。這個 subclass 會宣告兩個東西：
 
-我們在這個 migration 中加上一個 operation：
+1. `dependencies` 告訴 Django 必須在執行這個 migration 前先執行哪些 migrations。每個 migration 是用 `(app 名, migration module 名)` 表示，所以例如如果我們想要 depend 一個位於 `stores/migrations/0001_auto.py` 的檔案，就應該填入 `stores.0001_auto`。
+2. `operations` 告訴 Django 這個 migration 包含哪些步驟。
+
+我們首先加入一個 operation：
 
 ```python
 def create_stores(apps, schema_editor):
@@ -121,9 +121,9 @@ class Migration(migrations.Migration):
     ]
 ```
 
-所以當這個 migration 被執行時，就會執行上面的 `create_stores` 函式。在函式中我們建立了兩個店家，並在其中之一建立兩個菜單項目。
+我們在 `operations` 列表裡加入一個 `RunPython` 指令，所以當這個 migration 被執行時，就會執行上面的 `create_stores` 函式。在函式中我們建立了兩個店家，並在其中之一建立兩個菜單項目。
 
-不過注意，我們這裡不是使用 import 把 model 定義讀入，而必須使用 `apps.get_model`。這是因為這個 migration 被執行時，model 的定義並不一定與現在相同，所以 Django 會在執行 migration 時動態根據之前的 migration 結果產生 model 定義，並存在傳入的 `apps` 參數中。也因為這個理由，Django 不見得能正確追蹤所有的 model 定義，所以如果你建立物件的過程需要用到一些沒有存在資料庫內的資訊（例如要使用某個 model method），就有可能會出問題。詳情請參照 [migration 官方文件](https://docs.djangoproject.com/en/1.7/topics/migrations/)。
+不過注意，我們這裡不是使用 import 把 model 定義讀入，而必須使用 `apps.get_model`。這是因為這個 migration 被執行時，model 的定義並不一定與現在相同，所以 Django 會在執行 migration 時動態根據之前的 migration 結果產生 model 定義，並存在傳入的 `apps` 參數中。也因為這個理由，Django 不見得能正確追蹤所有的 model 定義，所以如果你建立物件的過程需要用到一些沒有存在資料庫內的資訊（例如要使用某個 model method），就有可能會出問題。詳情請參照 [migration 官方文件](https://docs.djangoproject.com/en/1.7/topics/migrations/)。但在這裡我們只是想簡單建立 model 物件，所以沒什麼問題。
 
 完成之後，執行
 
@@ -139,11 +139,11 @@ Django 就會自動偵測尚未被使用的 migration 並執行它。所以只�
 
 > `MEDIA_ROOT` 的作用與 `STATIC_ROOT` 類似，只是它是用來告訴 Django 當使用者上傳檔案時，應該把檔案放在哪裡。這裡我們單純就只是把它放在外面一層的 `media` 目錄裡，但你可以設定 NFS 或者各式各樣的服務來用，只要 Django 找得到就行了。
 
-所以加了這行之後，你就可以用 Django 處理使用者的檔案上傳。我們在教學中沒有提到，不過如果你想在 form 中讓使用者上傳檔案（HTML 的 `<input type="file">`），就可以使用 [`django.forms.FileField`](https://docs.djangoproject.com/en/dev/ref/forms/fields/#filefield)，也可以配合 [`django.db.models.FileField`](https://docs.djangoproject.com/en/dev/ref/models/fields/#django.db.models.FileField) 來把圖片資訊存入資料庫。
+所以只要加上 `MEDIA_ROOT` 設定，你就可以用 Django 處理使用者的檔案上傳。我們在介紹 form 時沒有提到，但如果你想在 form 中讓使用者上傳檔案（HTML 的 `<input type="file">`），也可以使用 [`django.forms.FileField`](https://docs.djangoproject.com/en/dev/ref/forms/fields/#filefield)，配合 [`django.db.models.FileField`](https://docs.djangoproject.com/en/dev/ref/models/fields/#django.db.models.FileField) 把圖片資訊存入資料庫。
 
 等等，存入資料庫？大家不是都說**不要**把 binary data 存進資料庫嗎？其實 Django 在處理檔案時，只會在資料庫存入檔案**路徑**。檔案本身則會被存入你在 `MEDIA_ROOT` 中指定的位置。[註 1]
 
-這個檔案在 HTML 裡的 URL 就要靠 `MEDIA_URL` 設定來處理。如果你這樣設定：
+這個檔案在 HTML 裡就要靠 `MEDIA_URL` 設定來處理。如果你這樣設定：
 
 ```python
 MEDIA_ROOT = '/home/django/media'
@@ -151,7 +151,7 @@ MEDIA_ROOT = '/home/django/media'
 MEDIA_URL = 'http://tw.pyconusercontent.org/'
 ```
 
-那麼 `/home/django/media/PyCon_Day1-720.jpg` 這個檔案就會被對應到 `http://tw.pyconusercontent.org/PyCon_Day1-720.jpg`（沒有這個網址，不用試了）。
+那麼 `/home/django/media/PyCon_Day1-720.jpg` 這個檔案就會被對應到 `http://tw.pyconusercontent.org/PyCon_Day1-720.jpg`（網址是我亂掰的，別亂按否則後果自負 XD）。
 
 這裡有個特殊狀況：如果你只是想把 media file 上傳到「目前這台機器」（亦即你的 media server 和 web server 是同一台機器），就可以像這樣設定：
 
@@ -173,7 +173,7 @@ server {
 }
 ```
 
-就不需要在設定檔指定 host name。但如果你這麼做，就需要自己在開發機上的 URL config 設定 media URL——不然 Django 根本不知道要去哪裡找你的 media file。
+而不需要在設定檔指定 host name。但如果你這麼做，就需要自己在開發機上的 URL config 設定 media URL——不然 Django 根本不知道要去哪裡找你的 media file。
 
 一般的設定長這樣子：
 
@@ -195,4 +195,4 @@ if settings.DEBUG:
 
 ---
 
-註 1：如果不想存在 `MEDIA_ROOT` 而是想放在裡面的子目錄，或者你有自動修改檔名之類特殊需求，還可以另外設定 `upload_to` 參數。
+註 1：如果不想存在 `MEDIA_ROOT` 而是想放在裡面的子目錄，或者你有自動修改檔名之類特殊需求，還可以另外設定 [`upload_to` 參數](https://docs.djangoproject.com/en/1.7/ref/models/fields/#django.db.models.FileField.upload_to)。
