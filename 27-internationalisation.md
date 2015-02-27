@@ -3,7 +3,7 @@
 1. 讓一個網站用多種語言顯示內容（國際化）。
 2. 判斷使用者的地區與使用語言，以選擇顯示語言與格式。
 
-Django 的國際化主要的做法是：
+在 Django 中，國際化的步驟如下：
 
 1. 在程式中標記字串，讓 Gettext 知道哪些字串需要翻譯。
 2. 用 `manage.py makemessages` 把需要翻譯的字串抽出來，做成 `po` 檔。
@@ -11,7 +11,7 @@ Django 的國際化主要的做法是：
 4. 用 `manage.py compilemessages` 把 `po` 檔編譯成 `mo` 檔。
 5. 當某個 request 用到被翻譯的字串時，Django 會自動 lookup 對應的翻譯來使用。
 
-由於 Django 中將翻譯檔編譯的功能是基於 GNU Gettext，所以如果你需要編譯翻譯檔，就必須有 GNU Gettext toolset。在 Linux 上這不是問題，但如果你用 [OS X](https://github.com/Homebrew/homebrew/issues/8461) 或 [Windows](https://docs.djangoproject.com/en/dev/topics/i18n/translation/#gettext-on-windows)，就需要自行安裝 Gettext，並把它們加入 PATH。[註 2]
+由於 Django 使用 GNU Gettext 編譯翻譯檔（第四步），所以需要 GNU Gettext toolset。在 Linux 上這不是問題，但如果你用 [OS X](https://github.com/Homebrew/homebrew/issues/8461) 或 [Windows](https://docs.djangoproject.com/en/dev/topics/i18n/translation/#gettext-on-windows)，就需要自行安裝 Gettext，並把它們加入 PATH。（前面的連結中有相關說明。）[註 1]
 
 我們來把店家相關的名稱翻成中文。新增下面的檔案：
 
@@ -80,7 +80,7 @@ class MenuItem(models.Model):
     # ...
 ```
 
-欄位的名稱同樣是用 `verbose_name` 屬性。這個字串會在 model 被製作成 form 時被拿來當標籤使用。Model 本身的名稱則要用 `Meta` 裡面的屬性設定，其中 `verbose_name_plural` 代表複數的翻譯。如果不指定這個，Django 預設會在需要複數時直接在單數詞後面加 s；在英文裡這可能通常還 OK，但中文看起來就不對了，所以必須指定這個選項。
+欄位的名稱同樣是用 `verbose_name` 屬性。這個字串會在 model 被製作成 form 時被拿來當標籤使用。Model 本身的名稱則要用 `Meta` 裡面的屬性設定，其中 `verbose_name_plural` 代表複數的翻譯。如果不指定這個，Django 預設會在需要複數時直接在單數詞後面加 s（或 es）；在英文裡這通常還 OK，但中文看起來就不對了，所以必須指定這個選項。
 
 接著我們把 `stores` app 裡的翻譯整理成中文翻譯檔（`po` 檔）。首先建立 `stores/locale` 目錄：
 
@@ -95,7 +95,7 @@ cd stores
 python ../manage.py makemessages -l zh_TW
 ```
 
-注意一定要進去 `stores` 目錄才能正常執行！這會讓 Django 產生一個 `zh_TW`（台灣中文）的翻譯檔，讓你可以打開來編輯。
+注意一定要進去 `stores` 目錄才能正常執行，而且必須要用 `../manage.py`，因為這個檔案在外面那層！上面的指令會讓 Django 產生一個 `zh_TW`（台灣中文）的翻譯檔。我們打開它，來編輯看看。
 
 翻譯的項目會類似下面這樣子：
 
@@ -105,7 +105,13 @@ msgid "Store"
 msgstr ""
 ```
 
-第一行的註解代表這個詞出現在哪裡，`msgid` 與 `msgstr` 分別代表被輸入 ugettext（也就是程式裡面使用的值）與實際要使用的翻譯。把你想要的翻譯填到雙引號中即可。
+第一行的註解代表這個詞出現在哪裡，`msgid` 與 `msgstr` 分別代表會被輸入 ugettext（也就是程式裡面使用的值）、以及 ugettext 應該為這個語系輸出的翻譯。把你想要的翻譯填到雙引號中即可，像這樣：
+
+```
+#: models.py:21
+msgid "Store"
+msgstr "店家"
+```
 
 修改完之後，仍然在 `stores` 目錄中把 `po` 編譯成 `mo`：
 
@@ -113,9 +119,9 @@ msgstr ""
 python ../manage.py compilemessages
 ```
 
-把 server 跑起來，進入 admin 看看。你的店家名稱應該都變成中文了！[註 2]
+把 server 跑起來，進入 admin 看看。你的「Store」model 標題應該會變成中文「店家」。[註 2]
 
-目前我們都是用預設語言偵測。不過有時候我們還是會想手動切換。Django 主要是使用 session、cookie 與 HTTP header 中的 Accept-Languages 來判斷應該使用什麼語言。[註 3] 如果要實作多國語言，必須確認設定裡有以下內容：
+我們目前是讓 Django 偵測我們的預設語言，但有時候我們可能也會想手動切換，看到其他的語言。Django 可以使用 session、cookie 與 HTTP header 中的 Accept-Languages 來判斷應該使用什麼語言。[註 3] 如果要實作多國語言，必須確認設定裡有以下內容：
 
 1. `USE_I18N` 是 `True`。
 2. `MIDDLEWARE_CLASSES` 中有 `'django.middleware.locale.LocaleMiddleware'`，且位於 `SessionMiddleware` 與 `CommonMiddleware` 之間。
@@ -169,9 +175,9 @@ urlpatterns = patterns(
 )
 ```
 
-在頁面上按按看這個 widget，應該會感受到一個頁面重新整理。如果你再去看 admin，應該就可以看到語言改變了！
+在頁面上按按看這個 widget，應該會感受到一個頁面重新整理。如果你再去看 admin，應該就可以看到語言改變。
 
-接著你也可以繼續修改其他部分，讓網站可以中英切換。在 Python 中，你可以使用 `ugettext` 與 `ugettext_lazy`，在 template 中則可以使用 `trans` tag（記得必須 `{% load i18n %}`，我超常忘記），例如像這樣：
+你也可以繼續修改其他部分，讓使用者可以切換網頁語言。在 Python 中，你可以使用 `ugettext` 與 `ugettext_lazy`，在 template 中則可以使用 `trans` tag（記得必須 `{% load i18n %}`，我超常忘記），例如像這樣：
 
 ```html
 {% load i18n %}
@@ -186,7 +192,7 @@ text = ungettext(
 ).format(count=count)
 ```
 
-就會根據 `count` 的值，顯示例如 *I have 1 apple* 或 *I have 5 apples* 等翻譯！不過這就讓你自己發掘吧，如果有什麼不懂得，就參考[官方文件](https://docs.djangoproject.com/en/1.7/topics/i18n/translation/)。
+就會根據 `count` 的值，顯示例如 *I have 1 apple* 或 *I have 5 apples* 等翻譯！不過這就讓你自己發掘吧，如果有什麼不懂的，就參考[官方文件](https://docs.djangoproject.com/en/1.7/topics/i18n/translation/)。
 
 ---
 
