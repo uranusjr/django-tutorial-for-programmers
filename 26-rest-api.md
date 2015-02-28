@@ -1,20 +1,22 @@
 網站好像做完了，有點沒梗怎麼辦。XD
 
-剩下的篇幅好像也不多，就來討論一些比較常被問到的主題吧。不過說真的我也不太確定大家（有人嗎？）想聽什麼。就經驗來看，詢問度最高的好像是要怎麼用 Django 做 REST API，所以今天就先講這個。明天之後就看有沒有人想聽特定主題再提出吧。
+剩下的篇幅好像也不多，就來討論一些比較常被問到的主題吧。不過說真的我也不太確定大家（有人嗎？）想聽什麼。就經驗來看，詢問度最高的好像是要怎麼用 Django 做 REST API，所以今天就先講這個。方便起見就還是用原本的專案來舉例。不過這些就不是原本網站的一部分，只是額外加上去的，所以如果有些東西看起來不太合，就請包涵了。
 
-方便起見就還是用原本的專案來舉例，不過這些就不是原本網站的一部分，只是額外加上去的。
-
-如果你不知道 REST 是什麼，請看[維基百科](http://zh.wikipedia.org/zh-tw/REST)——不過說真的如果你不知道，那好像也不用看這一章。總之，不管你現在是要做 mobile client、在網頁上用 AJAX、甚至想把前端整個換成 AngularJS 之類的，我們假設你現在需要有一個 REST API。
+若你不知道 REST 是什麼，請看[維基百科](http://zh.wikipedia.org/zh-tw/REST)。不管是為了 mobile client、在網頁上用 AJAX、甚至想把前端整個換成 AngularJS 之類的，總之我們現在需要一個 REST API。
 
 說到 AJAX，我們前面其實就有做過這種東西了嘛。如果你只是想讓幾個 view 回傳 JSON 之類的東西，其實根本用不著什麼技巧；Django 的 CBV 本身就提供 CRUD 封裝，JSON 和 XML serializer 更是 Python 內建，所以只要用幾個 CBV、稍微改寫幾個 methods，就可以輕鬆做出簡單的 REST API。Django Braces 也有一些好用的 mixins 可以協助。不過如果你需要比較完整的 REST API，或者要實作的東西比較多——例如 authentication/authorisation、throttling、同時支援不同的 formats、處理 foreign keys 等等，就可以考慮使用一個完整的 REST API library。
 
-現在 Django 界比較慣用的 REST API framework 主要有兩個：Django REST framework 和 Tastypie。用法其實差不多，都是基於 ORM 的功能，用類似 CBV 的架構（雖然不是真的用 CBV）把一些 boilerplate code 簡化掉。
+現在 Django 界比較慣用的 REST API framework 主要有兩個：Django REST framework 和 Tastypie。用法其實差不多，都是用類似 CBV 的架構（雖然不見得是真的用 CBV）把一些 boilerplate code 簡化掉，來表達你想呈現的資源，例如 ORM 的 model 等等。
 
-廢話太多了。總之這兩個 libraries 的架構都差不多是長這樣：
+廢話太多了。總之這兩者的架構都差不多是這樣：
 
 ![REST API structure](assets/rest-api.png)
 
-我們會為每個需要的 model 建立一個 resource，並把它們註冊到一個 API object。接著把這個 API 連結到某個 URL 底下，讓它負責把 request URI map 到正確的 resource 上。Resource 會根據我們給它的定義處理 auth-auth、throttling、(de)serialisation 等，並產生對應的 ORM query 對 model 進行存取。
+如果想建立一個基於 ORM model 的 REST API，我們需要依下面的概念設定：
+
+1. 為每個需要的 model 建立一個 resource，並把它們註冊到一個共用的 API object。
+2. 把上述 API object 連結到某個 URL 底下，讓它負責把 request URI map 到正確的 resource 上。
+3. 當使用者訪問某個 API URI 時，對應的 resource 會根據我們給它的定義處理 auth-auth、throttling、(de)serialisation 等，並產生對應的 ORM query 對 model 進行存取。
 
 我們來為 lunch 網站做個簡單的 REST API。因為篇幅關係，權限管理會單純一點（而且老實講我之前的網站也沒規劃得很好 XD）：
 
