@@ -79,11 +79,11 @@ def home(request):
 1. 幫我們的 URL 加上一個名稱。
 
     把 `lunch/urls.py` 中 `home` 的那行修改成下面這樣：
-    
+
     ```python
     url(r'^$', home, name='home'),
     ```
-    
+
 2. 用這個 name 來 refer 我們要的 URL：
 
     ```html
@@ -100,6 +100,6 @@ Django 的 template tag 語法是下面這樣：
 {% tag_name [ argument ... ] %}
 ```
 
-所以上面那個例子中，我們呼叫了 `url` 這個 tag，病傳入一個參數 `'home'`。這個 tag 會幫你找到名稱為 `home` 的 URL pattern，並輸出該 pattern 對應的網址。在這裡，輸出的就會是 `/`。
+所以上面那個例子中，我們呼叫了 `url` 這個 tag，並傳入一個參數 `'home'`。這個 tag 會幫你找到 `name` 為 `home`  的 URL pattern（**就是 `urls.py` 裡的 `name='home'`** ），並輸出該 pattern 對應的網址。在這裡，輸出的就會是 `/`。
 
 這就是你的第一個 Django view。接著我們要實際建立資料，把下面的內容也做出來。
