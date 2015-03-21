@@ -92,14 +92,14 @@ admin.site.register(Order, OrderAdmin)
 
 所以我們需要為 event 與 order 建立 CRUD 頁面。當然，我們可以和前面一樣，建立需要的 model forms 與 views。不過你不覺得做的事情都重複了嗎？這樣一直寫一樣的東西就飽了！
 
-所以 Django 提供了一個簡化 view 撰寫的工具：generic views。為了達到重用並保持擴充性，generic views 是用 class 配合 factory function 實作（有興趣的話可以[看源碼](http://ccbv.co.uk/projects/Django/1.7/django.views.generic.base/View/)），所以我們不再需要宣告 view functions，而是要繼承 Django 提供的 generic view *classes*。但這些類別裡面做的事情，其實還是和 view functions 相同。
+所以 Django 提供了一個 **簡化 view 撰寫** 的工具：generic views。為了達到重用並保持擴充性，generic views 是用 class 配合 factory function 實作（有興趣的話可以[看源碼](http://ccbv.co.uk/projects/Django/1.7/django.views.generic.base/View/)），所以我們不再需要宣告 view functions，而是要繼承 Django 提供的 generic view *classes*。但這些類別裡面做的事情，其實還是和 view functions 相同。
 
 常用的 generic views 有：
 
-* `DetailView`：顯示一個 model instance 的內容。
-* `ListView`：顯示「一堆」model instances（用 queryset 表示）的內容。支援 pagination。
-* `CreateView`：顯示一個 model form，接收 GET 與 POST 以建立 model instance。
-* `UpdateView`：和 `CreateView` 類似，但是用來更新 model instance（會指定 model form 的 `instance` 參數）。
+* `DetailView`：顯示**一個** model instance 的內容。
+* `ListView`：顯示「**數個**」model instances（用 queryset 表示）的內容。支援 pagination。
+* `CreateView`：顯示**一個** model form，接收 GET 與 POST 以建立 model instance。
+* `UpdateView`：和 `CreateView` 類似，但是是用來更新 model instance（會指定 model form 的 `instance` 參數）。
 * `DeleteView`：接收 POST 以刪除 model instance。也可以接收 GET，會顯示一個刪除用的 form（類似 admin 刪除時會出現的確認頁面）。
 * `TemplateView`：顯示某個特定的 template 內容。
 * `RedirectView`：回傳 `redirect` response。
