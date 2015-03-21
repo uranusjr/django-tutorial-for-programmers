@@ -85,7 +85,7 @@ def store_delete(request, pk):
     except Store.DoesNotExist:
         raise Http404
     if (not store.owner or store.owner == request.user
-            or request.user.has_perm('store_delete')):
+            or request.user.has_perm('delete_store', store)):
         store.delete()
         return redirect('store_list')
     return HttpResponseForbidden()
@@ -98,7 +98,15 @@ def store_delete(request, pk):
 
 所以這個 method 只有已登入的使用者可以用 POST 進入。
 
-接著我們找到 store object，判斷是否可刪除；如果可以，用 `delete` method 達成目的（否則同樣吐一個 403 Forbidden），接著重導向至 `store_list`。
+接著我們找到 store object，使用[has_perm()](https://docs.djangoproject.com/en/1.7/ref/contrib/auth/#django.contrib.auth.models.User.has_perm)判斷是否可刪除。 `has_perm()` 的第一個參數是 `動作_modelname` ，Django 使用的 permission 名稱， `delete_store` 代表「『刪除』 這筆 Store 資料的權限」。Django 預設有三種 permission:
+
+- add: `user.has_perm('foo.add_bar')`
+- change: `user.has_perm('foo.change_bar')`
+- delete: `user.has_perm('foo.delete_bar')`
+
+至於第二個參數是 store 的單一 instance。
+
+如果有權限，就用 `delete()` 達成目的（否則同樣吐一個 403 Forbidden），接著重導向至 `store_list`。
 
 加入這個 URL pattern：
 
