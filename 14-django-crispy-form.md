@@ -72,7 +72,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
         # ... 處理
         return something
     ```
-    
+
 Django template filter 還有很多玩法。例如用來把日期轉字串的 `date` filter 可以多吃一個參數，像這樣：
 
 ```html
@@ -121,6 +121,7 @@ from .models import Store
 class StoreForm(forms.ModelForm):
     class Meta:
         model = Store
+        fields = '__all__' # Django 1.8 開始一定要加這行，強迫 explicitly 指定需要的欄位。
 ```
 
 接著把 `stores/views.py` 裡的下面幾行刪除：
@@ -149,6 +150,7 @@ class StoreForm(forms.ModelForm):
 
     class Meta:
         model = Store
+        fields = '__all__'
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
