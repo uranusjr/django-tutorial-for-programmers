@@ -1,4 +1,4 @@
-和說好的一樣，今天要來解釋 Django 的 generic view classes——又稱 class-based views，簡稱 CBV——的運作原。
+和說好的一樣，今天要來解釋 Django 的 generic view classes——又稱 class-based views，簡稱 CBV——的運作原理。
 
 >CBV 能做到的事情跟 function based view 完全相同，然而由於使用 class，所以當你的 view function 中有很多重複的 code 時（例如一堆 views 都需要要取得相同的 context data 時），這時 CBV 的優勢就在於**可以繼承** 。
 >
