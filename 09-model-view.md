@@ -128,6 +128,8 @@ def store_detail(request, pk):
 最後是 template：
 
 ```html
+{# stores/templates/store_detail.html #}
+
 <!DOCTYPE html>
 <html>
 <head>
