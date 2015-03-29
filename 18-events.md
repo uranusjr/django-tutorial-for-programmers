@@ -92,7 +92,7 @@ admin.site.register(Order, OrderAdmin)
 
 所以我們需要為 event 與 order 建立 CRUD 頁面。當然，我們可以和前面一樣，建立需要的 model forms 與 views。不過你不覺得做的事情都重複了嗎？這樣一直寫一樣的東西就飽了！
 
-所以 Django 提供了一個 **簡化 view 撰寫** 的工具：generic views。為了達到重用並保持擴充性，generic views 是用 class 配合 factory function 實作（有興趣的話可以[看源碼](http://ccbv.co.uk/projects/Django/1.7/django.views.generic.base/View/)），所以我們不再需要宣告 view functions，而是要繼承 Django 提供的 generic view *classes*。但這些類別裡面做的事情，其實還是和 view functions 相同。
+所以 Django 提供了一個簡化 view 撰寫的工具：generic views。為了達到重用並保持擴充性，generic views 是用 class 配合 factory function 實作（有興趣的話可以[看源碼](http://ccbv.co.uk/projects/Django/1.7/django.views.generic.base/View/)），所以我們不再需要宣告 view functions，而是要繼承 Django 提供的 generic view *classes*。但這些類別裡面做的事情，其實還是和 view functions 相同。
 
 常用的 generic views 有：
 

@@ -124,6 +124,8 @@ class StoreForm(forms.ModelForm):
         fields = '__all__' # Django 1.8 開始一定要加這行，強迫 explicitly 指定需要的欄位。
 ```
 
+需要提到的一點是，一般並不建議寫成 `fields = '__all__'` ，而是把所有要的 fields 完整列出來比較 explicit。
+
 接著把 `stores/views.py` 裡的下面幾行刪除：
 
 ```python
