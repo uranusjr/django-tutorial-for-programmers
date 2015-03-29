@@ -104,7 +104,7 @@ urlpatterns = patterns(
 )
 ```
 
-如果你懂 regular expression，這應該很容易理解。`pk` 在這裡指 primary key，是 Django 慣用的命名法。
+`(?P<name>pattern)` 是 regular expression 的 **named grou**，就是根據 pattern 把抓到的 group 取名為 `name`，這在 `url` tag 裡面會用到，稍後解釋。`pk` 在這裡指 primary key，是 Django 慣用的命名法。
 
 接者是 view function。在 URL 中被捕捉的值會直接被傳入，所以：
 
@@ -174,6 +174,12 @@ def store_detail(request, pk):
 ```
 
 我們再次使用了 `url` tag，不過這次除了 name 之外多加了一個參數。這裡傳入的參數會被用在 URL 的 capturing group 上，所以這樣就可以得到某個 store 的 URL！
+
+> 來比對一下 template 中的 `url` tag 與 `urls.py`的內容幫助理解順便複習概念：
+> - `{% url 'store_detail' pk=store.pk %}`
+> - `url(r'^store/(?P<pk>\d+)/$', store_detail, name='store_detail')`
+>
+> url tag 的第一個 arg 會先去 urls.py 中找到 `name='store_detail' 的 url`，但由於我要拿到該 Store 的 url 還需要一個 pk 參數（不然誰知道你要拿哪家 store 的 url？），所以第二個 arg 我們就指定為該 `store`的`pk`、把`store.pk`傳入給`(?P<pk>\d+)`。
 
 如果你熟悉 CRUD 的話，我們今天實作的其實就是那個 R。其實不難吧！不過上面的程式其實不是很優秀，所以我們明天會花一點來改寫，讓它符合 best practice。
 

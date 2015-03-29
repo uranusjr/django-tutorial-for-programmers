@@ -96,10 +96,10 @@ admin.site.register(Order, OrderAdmin)
 
 常用的 generic views 有：
 
-* `DetailView`：顯示一個 model instance 的內容。
-* `ListView`：顯示「一堆」model instances（用 queryset 表示）的內容。支援 pagination。
-* `CreateView`：顯示一個 model form，接收 GET 與 POST 以建立 model instance。
-* `UpdateView`：和 `CreateView` 類似，但是用來更新 model instance（會指定 model form 的 `instance` 參數）。
+* `DetailView`：顯示**一個** model instance 的內容。
+* `ListView`：顯示「**數個**」model instances（用 queryset 表示）的內容。支援 pagination。
+* `CreateView`：顯示**一個** model form，接收 GET 與 POST 以建立 model instance。
+* `UpdateView`：和 `CreateView` 類似，但是是用來更新 model instance（會指定 model form 的 `instance` 參數）。
 * `DeleteView`：接收 POST 以刪除 model instance。也可以接收 GET，會顯示一個刪除用的 form（類似 admin 刪除時會出現的確認頁面）。
 * `TemplateView`：顯示某個特定的 template 內容。
 * `RedirectView`：回傳 `redirect` response。

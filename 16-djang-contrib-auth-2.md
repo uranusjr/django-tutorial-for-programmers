@@ -30,24 +30,7 @@ python manage.py migrate stores
 
 去 admin 看看，store 應該都多了一個 Owner 欄位可以選。
 
-不過如果你現在去 create 與 update view 看，會發現那裡面也多了一個 owner 欄位。我們不想要這樣；這應該直接帶入現在的使用者，而不是讓它們自己選。所以我們要修改一下 form。打開 `stores/forms.py`，把 `StoreForm` 修改成這樣：
-
-```python
-class StoreForm(forms.ModelForm):
-
-    class Meta:
-        model = Store
-        fields = ('name', 'notes',)
-
-    def __init__(self, *args, submit_title='Submit', **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.add_input(Submit('submit', submit_title))
-```
-
-在 `Meta` 中新增的那行 `fields` 告訴 Django 要包含哪些欄位；沒在裡面的就不會出現。
-
-接著我們要在 view 中自動填入目前的使用者。打開 `stores/views.py`，在 `store_create` 中找到這段：（注意 `store_update` 也有一樣的，不要改錯啊！）
+但如果你現在去 `/store/create/` 頁面新增店家，會看到一個錯誤頁面。這是因為我們剛剛新增的 `owner` 欄位不能是空白，但我們並沒有告訴 Django 要怎麼處理。所以我們必須修改 view，在適當時候填入目前的使用者。打開 `stores/views.py`，在 `store_create` 中找到這段：（注意 `store_update` 也有一樣的，不要改錯啊！）
 
 ```python
 if form.is_valid():

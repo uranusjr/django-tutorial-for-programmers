@@ -72,7 +72,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
         # ... 處理
         return something
     ```
-    
+
 Django template filter 還有很多玩法。例如用來把日期轉字串的 `date` filter 可以多吃一個參數，像這樣：
 
 ```html
@@ -121,7 +121,10 @@ from .models import Store
 class StoreForm(forms.ModelForm):
     class Meta:
         model = Store
+        fields = ('name', 'notes',)
 ```
+
+和 model 的結構類似，`Meta` class 告訴 Django 這個 form 的一些屬性。其中 `fields` 指名我們要從 `Store` model 中引入哪些欄位來使用。
 
 接著把 `stores/views.py` 裡的下面幾行刪除：
 
@@ -137,7 +140,7 @@ StoreForm = modelform_factory(Store)   # 在 create 與 update 各有一行
 from .forms import StoreForm
 ```
 
-基本上我們就是把產生 `StoreForm` 的方法替換，並將它拿到另一個檔案裡。這樣產生出來的結果與 `modelform_factory` 一模一樣。要使用什麼方法則視你的需求而定；在一般狀況下，直接使用 `modelform_factory` 就很夠，不過如果你要自訂比較多東西，直接 subclass `ModelForm` 會更方便一些，擴充性比較好，也比較容易維護。
+基本上就是把產生 `StoreForm` 的方法替換，並將它拿到另一個檔案裡。這樣產生出來的結果與 `modelform_factory` 一模一樣。要使用什麼方法則視你的需求而定；在一般狀況下，直接使用 `modelform_factory` 就很夠，不過如果你要自訂比較多東西，直接 subclass `ModelForm` 會更方便一些，擴充性比較好，也比較容易維護。
 
 馬上來擴充一下 `StoreForm`：
 
@@ -149,6 +152,7 @@ class StoreForm(forms.ModelForm):
 
     class Meta:
         model = Store
+        fields = ('name', 'notes',)
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
