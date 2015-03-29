@@ -86,7 +86,7 @@ class StoreSerializer(serializers.ModelSerializer):
         model = Store
 
 class StoreViewSet(viewsets.ModelViewSet):
-    model = Store
+    queryset = Store.objects.all()
     serializer_class = StoreSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 ```
@@ -102,7 +102,7 @@ from rest_framework import mixins
 
 class MenuItemViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin,
                       mixins.DestroyModelMixin, viewsets.GenericViewSet):
-    model = MenuItem
+    queryset = MenuItem.objects.all()
 ```
 
 就這樣！作法其實和 CBV 差不多，我們在這裡不是用 all-in-one 的 `ModelViewSet`，而是用什麼都沒有的 `GenericViewSet`，然後手動把需要的功能用 mixins 加入。我們只加入 create、update 和 destroy，所以就只會有 CUD 功能。記得我們的預設權限是只有登入才能使用，所以這裡就不用再指定 permission 了，設定 model 即可。
