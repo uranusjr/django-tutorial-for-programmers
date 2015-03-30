@@ -17,3 +17,10 @@
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/uranusjr/django-tutorial-for-programmers?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 如果你遇到任何問題，可以上這個 repository 的 [Gitter 聊天室](https://gitter.im/uranusjr/django-tutorial-for-programmers)發問。我有空會盡量回答。如果你有興趣，也歡迎進來幫忙，或者討論任何 Django 相關的主題！
+
+## 貢獻者
+
+* [Tzu-ping Chung](https://uranusjr.com) (@uranusjr)
+* Yen-Ying Lee (@white1033)
+* [Liang Bo Wang](http://blog.liang2.tw/) (@ccwang002)
+* [kuanyui](http://kuanyui.github.io/) (@kuanyui)
