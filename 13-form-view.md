@@ -26,7 +26,8 @@ class LogInForm(forms.Form):
 from django.forms.models import modelform_factory
 
 def store_create(request):
-    StoreForm = modelform_factory(Store)
+    # Django 1.8+ 必須明確地指名要用的欄位
+    StoreForm = modelform_factory(Store, fields=('name', 'notes'))
     form = StoreForm()
     return render(request, 'stores/store_create.html', {'form': form})
 ```
@@ -77,7 +78,7 @@ url(r'^new/$', views.store_create, name='store_create'),
 from django.shortcuts import render, redirect
 
 def store_create(request):
-    StoreForm = modelform_factory(Store)
+    StoreForm = modelform_factory(Store, fields=('name', 'notes'))
     if request.method == 'POST':
         form = StoreForm(request.POST)
         if form.is_valid():
@@ -126,7 +127,7 @@ def store_update(request, pk):
         store = Store.objects.get(pk=pk)
     except Store.DoesNotExist:
         raise Http404
-    StoreForm = modelform_factory(Store)
+    StoreForm = modelform_factory(Store, fields=('name', 'notes'))
     if request.method == 'POST':
         form = StoreForm(request.POST, instance=store)
         if form.is_valid():
