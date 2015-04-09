@@ -8,6 +8,11 @@ class MenuItemRelatedSerializer(serializers.ModelSerializer):
         fields = ('name', 'price',)
 
 
+class MenuItemViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin,
+                      mixins.DestroyModelMixin, viewsets.GenericViewSet):
+    queryset = MenuItem.objects.all()
+
+
 class StoreSerializer(serializers.ModelSerializer):
 
     menu_items = MenuItemRelatedSerializer(many=True)
@@ -17,11 +22,6 @@ class StoreSerializer(serializers.ModelSerializer):
 
 
 class StoreViewSet(viewsets.ModelViewSet):
-    model = Store
+    queryset = Store.objects.all()
     serializer_class = StoreSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-
-
-class MenuItemViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin,
-                      mixins.DestroyModelMixin, viewsets.GenericViewSet):
-    model = MenuItem

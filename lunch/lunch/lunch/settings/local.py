@@ -1,10 +1,7 @@
 from .base import *     # noqa
 
-SECRET_KEY = r'd*0()gv$rm*u&4noa6ehq^+9gsx7tpt$2qw^f%soj3%r5j18*l'
-
+SECRET_KEY = 'foobar'
 DEBUG = True
-
-TEMPLATE_DEBUG = True
 
 DATABASES = {
     'default': {

@@ -1,11 +1,13 @@
 import logging
+
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse, HttpResponseForbidden
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
-from django.contrib.auth.decorators import login_required
+
 from events.forms import EventForm
-from .forms import StoreForm, MenuItemFormSet
+from .forms import MenuItemFormSet, StoreForm
 from .models import Store
 
 
@@ -31,7 +33,7 @@ def store_detail(request, pk):
 
 def store_create(request):
     if request.method == 'POST':
-        form = StoreForm(request.POST)
+        form = StoreForm(request.POST, submit_title='建立')
         if form.is_valid():
             store = form.save(commit=False)
             if request.user.is_authenticated():
@@ -51,8 +53,9 @@ def store_update(request, pk):
         store = Store.objects.get(pk=pk)
     except Store.DoesNotExist:
         raise Http404
+
     if request.method == 'POST':
-        form = StoreForm(request.POST, instance=store)
+        form = StoreForm(request.POST, instance=store, submit_title='更新')
         menu_item_formset = MenuItemFormSet(request.POST, instance=store)
         if form.is_valid() and menu_item_formset.is_valid():
             store = form.save()
@@ -62,6 +65,7 @@ def store_update(request, pk):
         form = StoreForm(instance=store, submit_title=None)
         form.helper.form_tag = False
         menu_item_formset = MenuItemFormSet(instance=store)
+
     return render(request, 'stores/store_update.html', {
         'form': form, 'store': store, 'menu_item_formset': menu_item_formset,
     })

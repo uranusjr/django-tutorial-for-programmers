@@ -1,4 +1,5 @@
 from django.shortcuts import render
+
 from events.models import Event
 
 

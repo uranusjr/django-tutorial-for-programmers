@@ -16,7 +16,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='store',
             name='owner',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='owned_stores', null=True),
-            preserve_default=True,
+            field=models.ForeignKey(null=True, related_name='owned_stores', to=settings.AUTH_USER_MODEL),
         ),
     ]

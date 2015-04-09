@@ -2,8 +2,6 @@ from .base import *     # noqa
 
 DEBUG = False
 
-TEMPLATE_DEBUG = False
-
 SECRET_KEY = get_env_var('DJANGO_LUNCH_SECRET_KEY')
 
 DATABASES = {

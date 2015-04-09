@@ -1,5 +1,4 @@
 {% extends 'stores/base.html' %}
-
 {% load staticfiles crispy_forms_tags %}
 
 
@@ -7,6 +6,7 @@
 
 
 {% block content %}
+
 <form method="post">
 
   {% crispy form %}
@@ -22,6 +22,7 @@
   <button type="submit" class="btn btn-primary">更新</button>
 
 </form>
+
 {% endblock content %}
 
 

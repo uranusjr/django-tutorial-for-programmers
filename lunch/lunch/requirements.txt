@@ -1,7 +1,7 @@
-Django==1.7
+Django==1.8
 django-braces==1.4.0
-django-crispy-forms==1.4.0
-six==1.8.0
+django-crispy-forms-ng==2.0.0
+git+https://github.com/django-tastypie/django-tastypie.git
 django-toolbelt
-django-tastypie
 djangorestframework
+six==1.9.0

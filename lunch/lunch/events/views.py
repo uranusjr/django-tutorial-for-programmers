@@ -1,28 +1,22 @@
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.views.generic import CreateView, DetailView
+
 from braces.views import LoginRequiredMixin
-from .models import Event, Order
+
 from .forms import EventForm, OrderForm
+from .models import Event, Order
 
 
 class EventCreateView(LoginRequiredMixin, CreateView):
-
-    model = Event
     form_class = EventForm
     http_method_names = ('post',)
+    model = Event
 
 
 class EventDetailView(LoginRequiredMixin, DetailView):
 
     model = Event
-
-    def get_order(self, user):
-        try:
-            order = Order.objects.get(user=user, event=self.get_object())
-        except Order.DoesNotExist:
-            order = None
-        return order
 
     def post(self, request, *args, **kwargs):
         order = self.get_order(user=request.user)
@@ -42,3 +36,10 @@ class EventDetailView(LoginRequiredMixin, DetailView):
         order_form.fields['item'].queryset = self.object.store.menu_items.all()
         data['order_form'] = order_form
         return data
+
+    def get_order(self, user):
+        try:
+            order = Order.objects.get(user=user, event=self.get_object())
+        except Order.DoesNotExist:
+            order = None
+        return order

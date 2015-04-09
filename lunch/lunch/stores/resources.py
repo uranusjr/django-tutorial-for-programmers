@@ -1,4 +1,5 @@
-from tastypie import resources, fields, authentication, authorization
+from tastypie import authentication, authorization, fields, resources
+
 from .models import Store, MenuItem
 
 

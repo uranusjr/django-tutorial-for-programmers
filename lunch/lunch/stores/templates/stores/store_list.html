@@ -1,5 +1,4 @@
 {% extends 'stores/base.html' %}
-
 {% load staticfiles stores_tags %}
 
 {% block title %}店家列表 | {{ block.super }}{% endblock title %}
@@ -22,7 +21,6 @@
 </div>
 {% endfor %}
 {% endblock content %}
-
 
 {% block js %}
 <script src="{% static 'stores/js/store_list.js' %}"></script>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-25 01:19+0000\n"
+"POT-Creation-Date: 2015-04-09 15:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,32 +24,32 @@ msgstr "店家"
 
 #: models.py:11
 msgid "owner"
-msgstr "擁有人"
+msgstr ""
 
 #: models.py:14 models.py:44
 msgid "name"
-msgstr "名稱"
+msgstr ""
 
 #: models.py:17
 msgid "notes"
-msgstr "註記"
+msgstr ""
 
 #: models.py:21
 msgid "Store"
-msgstr "店家"
+msgstr ""
 
 #: models.py:41
 msgid "store"
-msgstr "店家"
+msgstr ""
 
 #: models.py:47
 msgid "price"
-msgstr "價格"
+msgstr ""
 
 #: models.py:51
 msgid "Menu item"
-msgstr "菜單項目"
+msgstr ""
 
 #: models.py:52
 msgid "Menu items"
-msgstr "菜單項目"
+msgstr ""

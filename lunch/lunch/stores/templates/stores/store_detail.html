@@ -1,12 +1,9 @@
 {% extends 'stores/base.html' %}
-
 {% load crispy_forms_tags stores_tags %}
 
 {% block title %}{{ store.name }} | {{ block.super }}{% endblock title %}
 
 {% block content %}
-<h1>{{ store.name }}</h1>
-<p>{{ store.notes }}</p>
 
 <form method="post" action="{% url 'store_delete' store.pk %}" class="controls">
   {% csrf_token %}
@@ -16,6 +13,8 @@
   {% endif %}
 </form>
 
+<h1>{{ store.name }}</h1>
+<p>{{ store.notes }}</p>
 <table class="table">
   <thead>
     <tr><th>品項</th><th>單價</th></tr>

@@ -2,7 +2,6 @@ from .base import *     # noqa
 import dj_database_url
 
 DEBUG = False
-TEMPLATE_DEBUG = False
 
 SECRET_KEY = get_env_var('DJANGO_SECRET_KEY')
 

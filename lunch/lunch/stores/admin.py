@@ -1,20 +1,18 @@
 from django.contrib import admin
-from .models import Store, MenuItem
+from .models import MenuItem, Store
 
 
-class MenuItemInline(admin.StackedInline):
+class MenuItemInline(admin.TabularInline):
     model = MenuItem
     extra = 1
 
 
-class StoreAdmin(admin.ModelAdmin):
-    list_display = ('name', 'notes',)
-    inlines = (MenuItemInline,)
-
-
+@admin.register(MenuItem)
 class MenuItemAdmin(admin.ModelAdmin):
     list_display = ('name', 'price',)
 
 
-admin.site.register(Store, StoreAdmin)
-admin.site.register(MenuItem, MenuItemAdmin)
+@admin.register(Store)
+class StoreAdmin(admin.ModelAdmin):
+    list_display = ('name', 'notes',)
+    inlines = (MenuItemInline,)
