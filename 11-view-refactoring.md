@@ -93,14 +93,13 @@ url(r'^store/', include('stores.urls')),
 接著在 `stores` 裡新增一個檔案 `urls.py`，內容如下：
 
 ```python
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from . import views
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^$', views.store_list, name='store_list'),
     url(r'^(?P<pk>\d+)/$', views.store_detail, name='store_detail'),
-)
+]
 ```
 
 因為路徑前面的 `store/` 部分已經被比對掉了，這裡只檢查路徑的後半段。測試所有路徑都沒有壞掉！我們今天大概完成了一半；因為內容有點長，好像得分成兩天寫。明天仍然是重構。

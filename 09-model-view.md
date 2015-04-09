@@ -3,16 +3,15 @@
 ```python
 # lunch/urls.py
 
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
-from stores.views import home, store_list
+from stores.views import home, store_list              # 記得 import
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^$', home, name='home'),
     url(r'^store/$', store_list, name='store_list'),   # 新增這一行
     url(r'^admin/', include(admin.site.urls)),
-)
+]
 ```
 
 接著是 `store_list` function。為了把店家列表顯示在這個頁面上，我們要使用 Django 的 ORM query。Django 的 ORM query 模式如下：
@@ -91,17 +90,16 @@ def store_list(request):
 ```python
 # lunch/urls.py
 
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
-from stores.views import home, store_list, store_detail
+from stores.views import home, store_list, store_detail                 # 記得 import
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^$', home, name='home'),
     url(r'^store/$', store_list, name='store_list'),
     url(r'^store/(?P<pk>\d+)/$', store_detail, name='store_detail'),    # 新增這行
     url(r'^admin/', include(admin.site.urls)),
-)
+]
 ```
 
 `(?P<name>pattern)` 是 regular expression 的 **named grou**，就是根據 pattern 把抓到的 group 取名為 `name`，這在 `url` tag 裡面會用到，稍後解釋。`pk` 在這裡指 primary key，是 Django 慣用的命名法。

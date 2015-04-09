@@ -26,8 +26,7 @@ class LogInForm(forms.Form):
 from django.forms.models import modelform_factory
 
 def store_create(request):
-    # Django 1.8+ 必須明確地指名要用的欄位
-    StoreForm = modelform_factory(Store, fields=('name', 'notes'))
+    StoreForm = modelform_factory(Store, fields=('name', 'notes',))
     form = StoreForm()
     return render(request, 'stores/store_create.html', {'form': form})
 ```
@@ -65,7 +64,7 @@ url(r'^new/$', views.store_create, name='store_create'),
 但 `{% csrf_token %}` 是什麼？如果你把 server 跑起來，然後看 `http://localhost:8000/store/new/` 的 HTML，會發現 Django 把它轉成一個像這樣的 input 欄位：
 
 ```html
-<input type="hidden" name="csrfmiddlewaretoken" value="qfbg5BIB6818xpzy6Yz0OxOUcb8YxB2W">
+<input type="hidden" name="csrfmiddlewaretoken" value="qfbg5BIB6818xpzy6Yz0OxOUcb8YxB2W" />
 ```
 
 有關 [CSRF](http://zh.wikipedia.org/wiki/跨站请求伪造)（cross-site request forgery）的相關知識可以參考[這篇文章](http://cyrilwang.pixnet.net/blog/post/31813568-%5B技術分享%5D-cross-site-request-forgery-(part-1))。詳細的不談，這裡的重點是 Django 會使用這個 token 來確認你的 form request 有否被偽造。所以如果你要使用 Django form，就必須記得加上這個欄位。
@@ -75,10 +74,10 @@ url(r'^new/$', views.store_create, name='store_create'),
 ```python
 # stores/view.py
 
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 
 def store_create(request):
-    StoreForm = modelform_factory(Store, fields=('name', 'notes'))
+    StoreForm = modelform_factory(Store, fields=('name', 'notes',))
     if request.method == 'POST':
         form = StoreForm(request.POST)
         if form.is_valid():

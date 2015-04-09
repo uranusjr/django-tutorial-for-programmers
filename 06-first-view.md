@@ -2,28 +2,25 @@
 
 當 Django 收到一個 HTTP request 時，會首先確認該 request 的 URI 應該對應到哪個 view（如果對應不到，直接回傳 [404 Not Found](http://zh.wikipedia.org/zh-hant/HTTP_404)），並把 request 交給它。View 要負責處理這個 request，並回傳一個 HTTP response：
 
-```
-           ┌──────────────┐
- request   │              │  response
-─────────> │     view     │ ──────────>
-           │              │
-           └──────────────┘
-```
+               ┌──────────────┐
+     request   │              │  response
+    ─────────> │     view     │ ──────────>
+               │              │
+               └──────────────┘
 
 這顯然是一個 [function](http://sco.wikipedia.org/wiki/Function_(mathematics))！所以在 Django 中，每個 view 其實就是一個 function。這個 function 接受一個 request 引數（與其他參數，我們之後會提到），回傳一個 `django.http.HttpResponse` 物件。由於 HTTP response 格式需要設定很多東西，所以 Django 提供了一個 shortcut `django.shortcuts.render` 來方便我們產出 response 物件。
 
 所以我們來實作 `home` 這個 view。首先我們要在 `lunch/urls.py` 新增一個 URL pattern，讓 Django 知道如何把網址導向至 view 的 function：
 
 ```python
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
 from stores.views import home
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^$', home),
     url(r'^admin/', include(admin.site.urls)),
-)
+]
 ```
 
 這個 `url` 用 regular expression match 首頁，也就是 URI 是空字串的狀況，並把它對應到 `home`。

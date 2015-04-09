@@ -21,7 +21,7 @@ lunch
 這個設定代表專案的根目錄。預設是
 
 ```python
-os.path.dirname(os.path.dirname(__file__))
+os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ```
 
 亦即「這個檔案的外層的外層」，也就是上面那個樹狀圖的第一個 `lunch`（亦即 `django-admin` 建立的外層 `lunch` 目錄）。
@@ -36,11 +36,7 @@ os.path.dirname(os.path.dirname(__file__))
 
 如果設為 `True`，則 Django 會在遇到錯誤時顯示各式各樣的錯誤訊息，協助你找到問題。所以通常我們在正式開站前要設成 `False`，不然就會和某市長候選人的官方網站一樣被[嘲笑](http://debug-guy-blog.logdown.com/posts/222620-taipeihope-ggininder)。
 
-### `TEMPLATE_DEBUG`
-
-跟上面那個差不多，只是它可以顯示 template 中的錯誤。我們之後會再說明 template 是什麼，不過反正這也是一樣在正式開站時要關掉，不然就會像某市長候⋯⋯(夠了)。
-
-好，先看到這邊。我們在網站上線時要把 `DEBUG` 和 `TEMPLATE_DEBUG` 關掉。可是在開發時，我們當然想看完整的錯誤訊息。所以這兩個環境的設定不能一樣。可是如果我們每次都在要上線時才改設定，肯定遲早會忘記，然後就像某團隊一樣出包。為了避免這個狀況，我們通常我們會有至少兩個設定檔：一個開發用，一個部署用。[註 1]
+好，先看到這邊。我們在網站上線時要把 `DEBUG` 關掉。可是在開發時，我們當然想看完整的錯誤訊息。所以這兩個環境的設定不能一樣。可是如果我們每次都在要上線時才改設定，肯定遲早會忘記，然後就像某團隊一樣出包。為了避免這個狀況，我們通常我們會有至少兩個設定檔：一個開發用，一個部署用。[註 1]
 
 為了方便管理這些設定檔，我們建議把它們通通丟到一個 `settings` 模組裡。所以我們在原本 `settings.py` 的位置創建一個目錄，叫做 `settings`，然後把 `settings.py` 丟進去，並改名為 `base.py`。然後在 `settings` 目錄裡多建立三個空白檔案：`__init__.py`、`local.py`、`production.py`。
 
@@ -73,7 +69,6 @@ from .base import *
 
 SECRET_KEY = '某個產生的 secret key 值，請自行代換'
 DEBUG = True
-TEMPLATE_DEBUG = True
 ```
 
 然後把 `base.py` 裡的這三個設定刪掉。我們之後在本機開發時，就會改用這個檔案，而不是原本的 `settings.py`。
@@ -81,7 +76,9 @@ TEMPLATE_DEBUG = True
 由於設定檔換位置了，我們就得再改一個參數。打開 `base.py`，把 `BASE_DIR` 改成這樣：
 
 ```python
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__)
+)))
 ```
 
 因為我們把設定檔拿進了一層（原本是 `lunch/settings.py`，現在是 `lunch/settings/local.py`），所以這個路徑要多往外跳一層才會正確。
@@ -133,11 +130,11 @@ DATABASES = {
 設定完之後，你的 `local.py` 應該會長得像這樣（假設你用 SQLite 3）：
 
 ```python
-from .base import *     # noqa
+from .base import *
 
 SECRET_KEY = '同上，請自行代換'
 DEBUG = True
-TEMPLATE_DEBUG = True
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -154,15 +151,25 @@ python manage.py migrate
 
 你應該會看到這樣的輸出：
 
-```
-Operations to perform:
-  Apply all migrations: admin, contenttypes, auth, sessions
-Running migrations:
-  Applying contenttypes.0001_initial... OK
-  Applying auth.0001_initial... OK
-  Applying admin.0001_initial... OK
-  Applying sessions.0001_initial... OK
-```
+    Operations to perform:
+      Synchronize unmigrated apps: messages, staticfiles
+      Apply all migrations: admin, sessions, auth, contenttypes
+    Synchronizing apps without migrations:
+      Creating tables...
+        Running deferred SQL...
+      Installing custom SQL...
+    Running migrations:
+      Rendering model states... DONE
+      Applying contenttypes.0001_initial... OK
+      Applying auth.0001_initial... OK
+      Applying admin.0001_initial... OK
+      Applying contenttypes.0002_remove_content_type_name... OK
+      Applying auth.0002_alter_permission_name_max_length... OK
+      Applying auth.0003_alter_user_email_max_length... OK
+      Applying auth.0004_alter_user_username_opts... OK
+      Applying auth.0005_alter_user_last_login_null... OK
+      Applying auth.0006_require_contenttypes_0002... OK
+      Applying sessions.0001_initial... OK
 
 代表成功。如果你使用 SQLite 3，應該會在專案目錄外面（和 venv 同一層）發現一個叫 db.sqlite3 的檔案，代表我們的資料庫。（如果使用其他資料庫，也可以自己檢查一下裡面是否被建立的新的 tables。）現在我們（終於）可以執行這個網站了！Django 內建的執行指令是：
 
@@ -176,8 +183,8 @@ python manage.py runserver
 Performing system checks...
 
 System check identified no issues (0 silenced).
-September 31, 2014 - 09:48:08
-Django version 1.7, using settings 'lunch.settings.local'
+April 08, 2015 - 18:58:03
+Django version 1.8, using settings 'lunch.settings.local'
 Starting development server at http://127.0.0.1:8000/
 Quit the server with CONTROL-C.
 ```

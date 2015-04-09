@@ -17,15 +17,12 @@ INSTALLED_APPS = (
 接著打開 `lunch/urls.py`，確認 `admin` 有被對應到 Django admin：
 
 ```python
-urlpatterns = patterns(
-    '',
-    # Examples:
-    # url(r'^$', 'lunch.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
+urlpatterns = [
+    url(r'^$', home, name='home'),
 
     # 這一行把 admin/ 下面的 URL 對應到 Django admin。
-    url(r'^admin/', include(admin.site.urls),
-)
+    url(r'^admin/', include(admin.site.urls)),
+]
 ```
 
 `urls.py` 本身的功能我們之後再講。
@@ -68,13 +65,12 @@ admin.site.register(Store)
 資料多了之後，列表畫面好像就有點乾。我們來把 `notes` 欄位也顯示在上面。重新修改 `stores/admin.py`，把內容改成下面這樣（`import` 部分不變，這裡省略）：
 
 ```python
+@admin.register(Store)
 class StoreAdmin(admin.ModelAdmin):
     list_display = ('name', 'notes',)
-
-admin.site.register(Store, StoreAdmin)
 ```
 
-我們宣告了 `Store` 專用的 admin class，然後指定要在列表顯示 `name` 和 `notes`。然後我們在註冊 `Store` 時，指定使用 `StoreAdmin`。
+這裡宣告了 `Store` 專用的 admin class，然後指定要在列表顯示 `name` 和 `notes`。為了讓 Django 知道 `Store` model 應該使用 `StoreAdmin`，我們這裡改用 `admin.register` 這個 decorator 來告訴 Django：請在 admin 中註冊 `Store` 這個 model，並使用 `StoreAdmin` 來顯示。
 
 重新整理列表頁！你應該會看到多了一個 `Notes` 欄位。
 
@@ -83,10 +79,9 @@ admin.site.register(Store, StoreAdmin)
 我們再加上 `MenuItem` 的 admin：（記得 `import MenuItem`）
 
 ```python
+@admin.register(MenuItem)
 class MenuItemAdmin(admin.ModelAdmin):
     list_display = ('name', 'price',)
-
-admin.site.register(MenuItem, MenuItemAdmin)
 ```
 
 現在你應該可以新增菜單上的項目了。而且 Django 還會自動把 foreign key 變成一個下拉選單，並且把你所有的項目都放進去！
@@ -98,7 +93,7 @@ admin.site.register(MenuItem, MenuItemAdmin)
 先新增一個 inline admin：
 
 ```python
-class MenuItemInline(admin.StackedInline):
+class MenuItemInline(admin.TabularInline):
     model = MenuItem
     extra = 1
 ```

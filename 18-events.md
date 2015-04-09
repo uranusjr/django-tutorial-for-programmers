@@ -15,10 +15,17 @@ INSTALLED_APPS = (
 )
 ```
 
-然後建立 models：（該 import 的自己記得加）
+然後建立 models：
 
 ```python
 # events/models.py
+
+from django.conf import settings
+from django.core.urlresolvers import reverse
+from django.db import models
+
+from stores.models import MenuItem
+
 
 class Event(models.Model):
 
@@ -33,9 +40,9 @@ class Event(models.Model):
 
 class Order(models.Model):
 
-    event = models.ForeignKey('Event', related_name='orders')
+    event = models.ForeignKey(Event, related_name='orders')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='orders')
-    item = models.ForeignKey('stores.MenuItem', related_name='orders')
+    item = models.ForeignKey(MenuItem, related_name='orders')
     notes = models.TextField(blank=True, default='')
 
     class Meta:
@@ -70,14 +77,13 @@ class OrderInline(admin.StackedInline):
     model = Order
     extra = 1
 
+@admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     inlines = (OrderInline,)
 
+@admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('event', 'item', 'user',)
-
-admin.site.register(Event, EventAdmin)
-admin.site.register(Order, OrderAdmin)
 ```
 
 應該都不用解釋了。我們這裡用 `StackedInline` 替換了 `stores` 裡面用的 `TabularInline`，不過它們只有外觀不同（一個是 div-based，一個是 table-based），用起來效果一樣。
@@ -116,7 +122,6 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from .models import Event
 
-
 class EventForm(forms.ModelForm):
 
     class Meta:
@@ -133,8 +138,8 @@ class EventForm(forms.ModelForm):
 
 ```python
 from django.views.generic import CreateView, DetailView
-from .models import Event
 from .forms import EventForm
+from .models import Event
 
 class EventCreateView(CreateView):
     form_class = EventForm
@@ -182,25 +187,24 @@ class EventDetailView(DetailView):
 最後是 URL patterns。建立 `events/urls.py`
 
 ```python
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from . import views
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^new/$', views.EventCreateView.as_view(), name='event_create'),
     url(r'^(?P<pk>\d+)/$', views.EventDetailView.as_view(),
         name='event_detail'),
-)
+]
 ```
 
 然後把它包含到 `lunch/urls.py`：
 
 ```python
-urlpatterns = patterns(
+urlpatterns = [
     # ...
     url(r'^event/', include('events.urls')),
     # ...
-)
+]
 ```
 
 完成！去 <http://localhost:8000/event/new/> 新增一個 event。按下 **Submit** 後，你應該會直接被導向 event 的 detail view。

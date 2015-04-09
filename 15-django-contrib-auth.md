@@ -27,11 +27,11 @@ view name                   | 用途
 ```python
 # lunch/urls.py
 
-urlpatterns = patterns(
+urlpatterns = [
     # ...
     url(r'^accounts/', include('django.contrib.auth.urls')),
     # ...
-)
+]
 ```
 
 接著在 `base/templates/base.html` 加上登入按鈕：
@@ -48,13 +48,7 @@ urlpatterns = patterns(
         <li><a href="{% url 'store_list' %}">店家列表</a></li>
       </ul>
       <form class="navbar-right navbar-form" method="post" action="{% url 'logout' %}">
-        {% if user.is_authenticated %}
-        {% csrf_token %}
-        <input type="hidden" name="next" value="{% url 'home' %}">
-        <button class="btn btn-default" type="submit">登出</button>
-        {% else %}
         <a class="btn btn-default" href="{% url 'login' %}">登入</a>
-        {% endif %}
       </form>
     </div>
   </div>
@@ -64,7 +58,7 @@ urlpatterns = patterns(
 
 我們之後會談到為什麼這邊要用 form。目前就先這樣。
 
-如果你現在按下登入按鈕，應該會看到一個 `TemplateNotFound` 錯誤頁面，因為 Django 只提供了 views（與 URL patterns），但沒有提供 templates，我們要自己做。前面提過，這種不知道要放哪裡的東西我都丟到 `pages` 裡。所以新增 `pages/templates/registration/login.html`：
+如果你現在按下登入按鈕，應該會看到一個 `TemplateDoesNotExist` 錯誤頁面。這是因為 Django 只提供了 views（與 URL patterns），但沒有提供 templates，我們要自己做。前面提過，這種不知道要放哪裡的東西我都丟到 `pages` 裡。所以新增 `pages/templates/registration/login.html`：
 
 ```html
 {% extends 'base.html' %}

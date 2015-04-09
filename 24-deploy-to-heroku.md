@@ -16,7 +16,7 @@ Heroku 已經提供 HTTP 伺服器功能，而且本身不支援檔案上傳（�
 首先我們要讓 Heroku 使用 Python。建立一個檔案 `runtime.txt`，內容只有一行：
 
 ```
-python3.4.1
+python3.4.2
 ```
 
 這個檔案必須被放在專案的最上層，也就是與你的 apps（`base`、`stores` 等等）同一層。
@@ -60,7 +60,6 @@ import dj_database_url
 
 # 把 debug 模式關掉。
 DEBUG = False
-TEMPLATE_DEBUG = False
 
 # 設定 secret key。
 SECRET_KEY = get_env_var('DJANGO_SECRET_KEY')
@@ -102,12 +101,11 @@ def get_env_var(key):
 # lunch/wsgi.py
 
 import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "lunch.settings")
-
-# 注意這一段。
 from django.core.wsgi import get_wsgi_application
 from dj_static import Cling
-application = Cling(get_wsgi_application())
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "lunch.settings")
+application = Cling(get_wsgi_application())     # 注意這一行。
 ```
 
 這樣就準備完成了！接著是建立 Git repository。你可能會想要先建立一個 `.gitignore` 檔案（同樣放在最頂層，和 `requirements.txt` 一起）：

@@ -66,8 +66,8 @@ class Meta:
 
 class EventCreateView(CreateView):
     form_class = EventForm
-    model = Event
     http_method_names = ('post',)   # 只允許 POST！
+    model = Event
 ```
 
 注意這裡要用小寫——還記得昨天的內容嗎？因為 CBV 在檢查 HTTP 動詞時會用 `lower()` 把 `request.method` 的內容轉成小寫！

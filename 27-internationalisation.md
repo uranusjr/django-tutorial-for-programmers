@@ -82,6 +82,13 @@ class MenuItem(models.Model):
 
 欄位的名稱同樣是用 `verbose_name` 屬性。這個字串會在 model 被製作成 form 時被拿來當標籤使用。Model 本身的名稱則要用 `Meta` 裡面的屬性設定，其中 `verbose_name_plural` 代表複數的翻譯。如果不指定這個，Django 預設會在需要複數時直接在單數詞後面加 s（或 es）；在英文裡這通常還 OK，但中文看起來就不對了，所以必須指定這個選項。
 
+記得，有改 models 就要跑 migration，所以：
+
+```bash
+python manage.py makemigrations stores
+python manage.py migrate stores
+```
+
 接著我們把 `stores` app 裡的翻譯整理成中文翻譯檔（`po` 檔）。首先建立 `stores/locale` 目錄：
 
 ```bash
@@ -92,15 +99,15 @@ mkdir stores/locale
 
 ```bash
 cd stores
-python ../manage.py makemessages -l zh_TW
+python ../manage.py makemessages -l zh_Hant
 ```
 
-注意一定要進去 `stores` 目錄才能正常執行，而且必須要用 `../manage.py`，因為這個檔案在外面那層！上面的指令會讓 Django 產生一個 `zh_TW`（台灣中文）的翻譯檔。我們打開它，來編輯看看。
+注意一定要進去 `stores` 目錄才能正常執行，而且必須要用 `../manage.py`，因為這個檔案在外面那層！上面的指令會讓 Django 產生一個 `zh_Hant`（繁體中文）的翻譯檔。我們打開它，來編輯看看。
 
 翻譯的項目會類似下面這樣子：
 
 ```
-#: models.py:21
+#: apps.py:7 models.py:22
 msgid "Store"
 msgstr ""
 ```
@@ -108,7 +115,7 @@ msgstr ""
 第一行的註解代表這個詞出現在哪裡，`msgid` 與 `msgstr` 分別代表會被輸入 ugettext（也就是程式裡面使用的值）、以及 ugettext 應該為這個語系輸出的翻譯。把你想要的翻譯填到雙引號中即可，像這樣：
 
 ```
-#: models.py:21
+#: apps.py:7 models.py:22
 msgid "Store"
 msgstr "店家"
 ```
@@ -125,6 +132,7 @@ python ../manage.py compilemessages
 
 1. `USE_I18N` 是 `True`。
 2. `MIDDLEWARE_CLASSES` 中有 `'django.middleware.locale.LocaleMiddleware'`，且位於 `SessionMiddleware` 與 `CommonMiddleware` 之間。
+3. `TEMPLATES` 的 `context_processors` 列表中包含 `'django.template.context_processors.i18n'`。
 
 有這些資料之後，我們就可以實作一個 form 來切換語言：
 
@@ -134,7 +142,7 @@ python ../manage.py compilemessages
 # 設定我們要使用的語言。
 LANGUAGES = (
     ('en-us', 'English (United States)',),
-    ('zh-tw', '繁體中文（台灣）')
+    ('zh-hant', '中文（繁體）')
 )
 ```
 
@@ -169,7 +177,7 @@ $('.language-switch').change(function () {
 ```python
 # lunch/urls.py
 
-urlpatterns = patterns(
+urlpatterns = [
     # ...
     url(r'^i18n/', include('django.conf.urls.i18n')),
 )

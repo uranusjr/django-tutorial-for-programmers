@@ -74,7 +74,7 @@ def store_delete(request, pk):
     return HttpResponseForbidden()
 ```
 
-唔，多了好多沒看過的東西。如果你不熟悉 Python decorator，請先[跳轉](http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/)。我們這裡使用了兩個 decorators：
+唔，多了好多沒看過的東西。如果你不熟悉 Python decorator，請先[看懂這篇](http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/)。我們這裡使用了兩個 decorators：
 
 1. `login_required`：限制只有已登入使用者才能進入這個 view。（如果未登入而使用這個 view 會得到 403 Forbidden。）
 2. `require_http_methods`：限制這個 view 可以接收的 HTTP methods。這裡我們限制必須使用 POST。[註 1]

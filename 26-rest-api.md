@@ -145,10 +145,10 @@ Path pattern            | 功能
 
 ## Tastypie
 
-安裝：
+安裝：[註 2]
 
 ```bash
-pip install django-tastypie
+pip install git+https://github.com/django-tastypie/django-tastypie.git
 ```
 
 設定：
@@ -266,7 +266,7 @@ django-tastypie
 djangorestframework
 ```
 
-我們在 deploy 到 Ubuntu server 那章也提過，這個 requirements 檔案其實就是用來列出所有需要的套件，方便你用 `pip install -r` 一次裝好。所以當我們有新安裝任何套件時，就應該更新這裡的內容。[註 2]
+我們在 deploy 到 Ubuntu server 那章也提過，這個 requirements 檔案其實就是用來列出所有需要的套件，方便你用 `pip install -r` 一次裝好。所以當我們有新安裝任何套件時，就應該更新這裡的內容。[註 3]
 
 ### Heroku
 
@@ -327,4 +327,6 @@ sudo service nginx restart
 
 註 1：還有一些額外的，但我們關心的只有這些。
 
-註 2：如果想瞭解更詳細的 requirements file 語法與使用技巧，可以參照 PIP 的[官方文件](http://pip.readthedocs.org/en/latest/user_guide.html#requirements-files)。
+註 2：Tastypie 的 Django 1.8 支援尚未正式釋出，所以這邊使用了 PIP 的 Git 功能安裝開發版本。正式支援應該會在 0.12.2 版之後發佈，到時候只要用 `pip install django-tastypie` 即可安裝。
+
+註 3：如果想瞭解更詳細的 requirements file 語法與使用技巧，可以參照 PIP 的[官方文件](http://pip.readthedocs.org/en/latest/user_guide.html#requirements-files)。
