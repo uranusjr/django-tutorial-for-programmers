@@ -2,6 +2,13 @@
 
 <http://ithelp.ithome.com.tw/ironman7/app/profile/20091495/dev>
 
+## 版本說明
+
+由於各 Django 版本的程式內容與行為略有不同，本版本根據 Django 版本分支，其中內容略有不同。主分支（master）的內容會遵循最新的 Django 版本；請閱讀時確認有選到正確的分支。
+
+我會盡可能維護目前最新與前一版本的教學。更早的版本就不會繼續更新，可能會包含錯誤，使用時請注意。
+
+
 ## 授權
 
 <a rel="license" href="http://creativecommons.org/licenses/by/3.0/tw/"><img alt="創用 CC 授權條款" style="border-width:0" src="https://i.creativecommons.org/l/by/3.0/tw/88x31.png" /></a>
