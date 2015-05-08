@@ -43,7 +43,7 @@ class Order(models.Model):
 
     def __str__(self):
         return '{item} of {user} for {event}'.format(
-            item_name=self.item, user=self.user, event=self.event
+            item=self.item, user=self.user, event=self.event
         )
 ```
 
