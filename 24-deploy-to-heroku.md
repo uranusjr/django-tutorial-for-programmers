@@ -53,7 +53,7 @@ web: gunicorn lunch.wsgi --log-file -
 很久很久以前我們提過，開發機與部署時會需要不同的設定。我們要為 Heroku 增加一個設定檔：
 
 ```python
-# lunch/settings/production_heroku.py
+# lunch/settings/deploy_heroku.py
 
 from .base import *     # noqa
 import dj_database_url
