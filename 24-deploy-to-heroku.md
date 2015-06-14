@@ -16,7 +16,7 @@ Heroku 已經提供 HTTP 伺服器功能，而且本身不支援檔案上傳（�
 首先我們要讓 Heroku 使用 Python。建立一個檔案 `runtime.txt`，內容只有一行：
 
 ```
-python3.4.2
+python-3.4.2
 ```
 
 這個檔案必須被放在專案的最上層，也就是與你的 apps（`base`、`stores` 等等）同一層。
@@ -42,7 +42,7 @@ django-toolbelt
 
 其中最後兩個是 Heroku 專用套件。Heroku 不支援檔案伺服，但是我們可以藉由 DJ-Static，用 WSGI 伺服模擬一個。最後一項則是用來存取資料庫；Heroku 使用 PostgreSQL，所以必須安裝它的 Python binding——Psycopg2，dj-database-url 則可以方便我們設定資料庫的參數。
 
-再來，告訴 Heroku 要怎麼執行這個網站。同樣在頂層目錄，建立 `Profile`（注意沒有副檔名！）：
+再來，告訴 Heroku 要怎麼執行這個網站。同樣在頂層目錄，建立 `Procfile`（注意沒有副檔名！）：
 
 ```
 web: gunicorn lunch.wsgi --log-file -
@@ -53,7 +53,7 @@ web: gunicorn lunch.wsgi --log-file -
 很久很久以前我們提過，開發機與部署時會需要不同的設定。我們要為 Heroku 增加一個設定檔：
 
 ```python
-# lunch/settings/production_heroku.py
+# lunch/settings/deploy_heroku.py
 
 from .base import *     # noqa
 import dj_database_url
