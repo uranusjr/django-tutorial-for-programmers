@@ -54,7 +54,7 @@ def dispatch(self, request, *args, **kwargs):
     return handler(request, *args, **kwargs)
 ```
 
-所以它會去找 class 裡有沒有對應於目前 HTTP 動詞的 method 來呼叫，例如 GET request 會呼叫 `get`、POST 會呼叫 `post`，依此類推。但是如果動詞在 `http_method_names` 裡，或者找不到對應的 method，就會呼叫 `http_method_not_allowed`。
+所以它會去找 class 裡有沒有對應於目前 HTTP 動詞的 method 來呼叫，例如 GET request 會呼叫 `get`、POST 會呼叫 `post`，依此類推。但是如果動詞不在 `http_method_names` 裡，或者找不到對應的 method，就會呼叫 `http_method_not_allowed`。
 
 似乎有點進展了。我們先不管 `http_method_not_allowed`（其實預設行為就只是回傳一個 405 Method not allowed），來繼續追下去。實作動詞方法是 subclasses 的責任，所以我們來看一個我們有用到的：`DetailView`。
 
