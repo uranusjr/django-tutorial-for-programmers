@@ -15,7 +15,7 @@ from .models import MenuItem
 def store_update(request, pk):
     # ...
     MenuItemFormSet = inlineformset_factory(
-        parent_model=Store, model=MenuItem, extra=1,
+        parent_model=Store, model=MenuItem, fields=('name', 'price',), extra=1,
     )
     menu_item_formset = MenuItemFormSet(instance=store)
     return render(request, 'stores/store_update.html', {
