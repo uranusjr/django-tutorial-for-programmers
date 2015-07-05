@@ -15,7 +15,7 @@ from .models import MenuItem
 def store_update(request, pk):
     # ...
     MenuItemFormSet = inlineformset_factory(
-        parent_model=Store, model=MenuItem, extra=1,
+        parent_model=Store, model=MenuItem, fields=('name', 'price',), extra=1,
     )
     menu_item_formset = MenuItemFormSet(instance=store)
     return render(request, 'stores/store_update.html', {
@@ -190,7 +190,7 @@ $('.menu-item-add').click(function (e) {
 })(jQuery);
 ```
 
-這段 JavaScript 會找到 formset 中的最後一個項目（所以我們前面要用 div 把每個 form 包起來，這裡才能方便使用）clone 一份，修改其中欄位的 ID 與 name，把原本的值清除，把它 insert 到最後面，再修改 total forms 欄位值。這看起來實在非常麻煩，幸好除非你對 form 做了什麼奇怪的實情，否則這個 script 基本上可以一直沿用下去，只要修改 `lastElement` 與 `totalForms` 的 selector 就好了。[註 2]
+這段 JavaScript 會找到 formset 中的最後一個項目（所以我們前面要用 div 把每個 form 包起來，這裡才能方便使用）clone 一份，修改其中欄位的 ID 與 name，把原本的值清除，把它 insert 到最後面，再修改 total forms 欄位值。這看起來實在非常麻煩，幸好除非你對 form 做了什麼奇怪的事情，否則這個 script 基本上可以一直沿用下去，只要修改 `lastElement` 與 `totalForms` 的 selector 就好了。[註 2]
 
 重新整理看看！原本的 delete checkbox 應該會被紅色的 delete 刪除按鈕取代，而「更新」旁邊也多了一個「新增」按鈕，可以用來動態新增欄位。
 
