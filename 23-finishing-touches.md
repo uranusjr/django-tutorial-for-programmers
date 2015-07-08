@@ -74,7 +74,7 @@ class Meta:
 接著你可以這樣取出最新一筆：
 
 ```python
-current_event = Events.obejcts.lastest()
+current_event = Events.obejcts.latest()
 ```
 
 這個做法的好處是，如果你的 model 有很明確的排列順序（例如 blog post 或新聞會依發表時間排序等等），這個做法可以讓你集中邏輯，方便讓你未來知道「最新」的意義，在維護上與城市的語義都比較清楚。另一方面，`first` 與 `last` 就只是單純用來告知「目前這個 query set」的狀態，適合用在特定的排序上。[註 1]
