@@ -13,7 +13,7 @@
 首先我們建立一個設定檔：
 
 ```python
-# lunch/settings/production_ubuntu.py
+# lunch/settings/deploy_ubuntu.py
 
 from .base import *
 
