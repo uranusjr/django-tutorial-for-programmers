@@ -2,7 +2,7 @@
 
 要實作 create 與 update，就需要使用 HTML form。Django 提供了一個方便的介面，方便你建立表單。
 
-Django 的表單支援源自於 `djanfo.forms.Form` class。表單的宣告與 model 類似，只是使用的 field classes 不同。舉例而言，如果你想要有一個包含使用者名稱、密碼、以及一個「記住我」方塊的登入表單，就可以這樣宣告：
+Django 的表單支援源自於 `django.forms.Form` class。表單的宣告與 model 類似，只是使用的 field classes 不同。舉例而言，如果你想要有一個包含使用者名稱、密碼、以及一個「記住我」方塊的登入表單，就可以這樣宣告：
 
 ```python
 from django import forms
