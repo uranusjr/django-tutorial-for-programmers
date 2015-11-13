@@ -93,7 +93,7 @@ url(r'^(?P<pk>\d+)/delete/$', views.store_delete, name='store_delete'),
 # ...
 ```
 
-接著在 detail view 加入 delete form：
+接著在 `stores/templates/stores/store_detail.html` 中加入 delete form：
 
 ```html
 <form method="post" action="{% url 'store_delete' store.pk %}">
