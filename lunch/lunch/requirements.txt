@@ -1,7 +1,7 @@
-Django==1.8
-django-braces==1.4.0
-django-crispy-forms-ng==2.0.0
+Django>=1.9,<1.10
+django-braces==1.8.1
+django-crispy-forms==1.6.0
 django-tastypie
 django-toolbelt
 djangorestframework
-six==1.9.0
+six
