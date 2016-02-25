@@ -5,7 +5,7 @@ $('.menu-item-add').click(function (e) {
 
   var lastElement = $('.menu-item:last');
   var totalForms = $('#id_menu_items-TOTAL_FORMS');
-  var total = totalForms.val();
+  var total = parseInt(totalForms.val());
 
   var newElement = lastElement.clone(true);
   newElement.find(':input').each(function() {
@@ -13,14 +13,22 @@ $('.menu-item-add').click(function (e) {
       '-' + (total - 1) + '-',
       '-' + total + '-'
     );
-    var id = 'id_' + name;
-    $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+    $(this).attr({'name': name}).val('').removeAttr('checked');
   });
   newElement.find('label').each(function() {
     $(this).attr('for', $(this).attr('for').replace(
       '-' + (total - 1) + '-',
       '-' + total + '-'
     ));
+  });
+  newElement.find('*').each(function() {
+    var id = $(this).attr('id');
+    if (id) {
+      $(this).attr('id', id.replace(
+        '-' + (total - 1) + '-',
+        '-' + total + '-'
+      ));
+    }
   });
 
   totalForms.val(total + 1);
