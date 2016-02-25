@@ -44,12 +44,11 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'events',
     'pages',
     'stores',
     'base',
-    'braces',
     'crispy_forms',
     'rest_framework',
     'tastypie',
@@ -59,9 +58,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-)
+]
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -71,7 +70,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-)
+]
 
 ROOT_URLCONF = 'lunch.urls'
 
@@ -100,10 +99,10 @@ WSGI_APPLICATION = 'lunch.wsgi.application'
 
 LANGUAGE_CODE = 'en-us'
 
-LANGUAGES = (
+LANGUAGES = [
     ('en-us', 'English (United States)',),
     ('zh-hant', '中文（繁體）')
-)
+]
 
 TIME_ZONE = 'UTC'
 
@@ -148,12 +147,12 @@ LOGGING = {
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
-    ),
+    ],
 }
 
-TASTYPIE_DEFAULT_FORMATS = ('json',)
+TASTYPIE_DEFAULT_FORMATS = ['json']

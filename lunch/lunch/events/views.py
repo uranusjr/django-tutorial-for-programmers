@@ -1,8 +1,7 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.views.generic import CreateView, DetailView
-
-from braces.views import LoginRequiredMixin
 
 from .forms import EventForm, OrderForm
 from .models import Event, Order
@@ -10,7 +9,7 @@ from .models import Event, Order
 
 class EventCreateView(LoginRequiredMixin, CreateView):
     form_class = EventForm
-    http_method_names = ('post',)
+    http_method_names = ['post']
     model = Event
 
 

@@ -49,7 +49,7 @@ def store_detail(request, pk):
 
 class Meta:
     model = Event
-    fields = ('store',)
+    fields = ['store']
     widgets = {'store': forms.HiddenInput}   # 加上這行
 ```
 
@@ -66,7 +66,7 @@ class Meta:
 
 class EventCreateView(CreateView):
     form_class = EventForm
-    http_method_names = ('post',)   # 只允許 POST！
+    http_method_names = ['post']    # 只允許 POST！
     model = Event
 ```
 

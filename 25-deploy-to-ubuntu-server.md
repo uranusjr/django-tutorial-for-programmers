@@ -125,7 +125,7 @@ pythonpath = '/project/lunch'
 
 接著是 nginx。在 `/etc/nginx/sites-available` 裡建立一個設定檔：
 
-```
+```nginx
 upstream lunch {
     server 127.0.0.1:8080;
 }
@@ -180,7 +180,7 @@ Supervisor 是一個可以讓使用者監控機器內 processes 的工具。使�
 
 建立 `/etc/supervisor/conf.d/lunch.conf`：
 
-```
+```ini
 [group:lunch]
 programs=site
 

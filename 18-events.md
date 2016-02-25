@@ -9,10 +9,10 @@ python manage.py startapp events
 ```python
 # lunch/settings/base.py
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'events',
     # ...
-)
+]
 ```
 
 然後建立 models：
@@ -79,11 +79,11 @@ class OrderInline(admin.StackedInline):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    inlines = (OrderInline,)
+    inlines = [OrderInline]
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('event', 'item', 'user',)
+    list_display = ['event', 'item', 'user']
 ```
 
 應該都不用解釋了。我們這裡用 `StackedInline` 替換了 `stores` 裡面用的 `TabularInline`，不過它們只有外觀不同（一個是 div-based，一個是 table-based），用起來效果一樣。
@@ -126,7 +126,7 @@ class EventForm(forms.ModelForm):
 
     class Meta:
         model = Event
-        fields = ('store',)
+        fields = ['store']
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)

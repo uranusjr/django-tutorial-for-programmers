@@ -26,19 +26,19 @@ Django 預設的 form 格式實在不好看。如果我們想要，也可以每�
 
 ## 第三方套件：Django Crispy Forms
 
-我們來用第三方套件 Django Crispy Forms 來快速美化 form。首先安裝：[註 1]
+我們來用第三方套件 Django Crispy Forms 來快速美化 form。首先安裝：
 
 ```bash
-pip install django-crispy-forms-ng
+pip install django-crispy-forms
 ```
 
 在 `lunch/settings/base.py` 裡設定：
 
 ```python
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     # ...
     'crispy_forms',     # 新增這個 app。我習慣放在自己的 apps 與 Django apps 中間。
-)
+]
 
 # 新增這個設定
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
@@ -121,7 +121,7 @@ from .models import Store
 class StoreForm(forms.ModelForm):
     class Meta:
         model = Store
-        fields = ('name', 'notes',)
+        fields = ['name', 'notes']
 ```
 
 和 model 的結構類似，`Meta` class 告訴 Django 這個 form 的一些屬性。其中 `fields` 指名我們要從 `Store` model 中引入哪些欄位來使用。
@@ -209,7 +209,3 @@ def store_update(request, pk):
 ```
 
 今天就到這裡。恭喜你有個（比較）好看的表單了！你可以參考 Crispy Forms 的文件，把它弄得更好看一些，例如改成 horizontal form 之類的。明天我們會進入下一個主題：使用者認證，以準備實作 delete 功能。
-
----
-
-註 1：`django-crispy-forms-ng` 是我為了讓 Django Crispy Forms 相容 Django 1.8 製作的 fork。如果你使用 Django 1.7 或更早的版本，可以安裝原版的 `django-crispy-forms`，但如果需要在 Django 1.8 上執行（如同本教學），就需要安裝 `django-crispy-forms-ng`。但除了 `pip install` 的指令不同外，其他設定與使用方法都一模一樣。

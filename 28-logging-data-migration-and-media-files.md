@@ -163,7 +163,7 @@ MEDIA_URL = '/media/'
 
 然後直接在 web server 做 alias。例如如果你用 nginx：
 
-```
+```nginx
 server {
     # ...
     location /media/ {

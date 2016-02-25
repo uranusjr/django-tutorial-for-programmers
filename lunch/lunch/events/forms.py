@@ -10,7 +10,7 @@ class EventForm(forms.ModelForm):
 
     class Meta:
         model = Event
-        fields = ('store',)
+        fields = ['store']
         widgets = {'store': forms.HiddenInput}
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
@@ -23,7 +23,7 @@ class OrderForm(forms.ModelForm):
 
     class Meta:
         model = Order
-        fields = ('item', 'notes',)
+        fields = ['item', 'notes']
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)

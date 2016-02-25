@@ -5,7 +5,7 @@ from .models import Store, MenuItem
 class MenuItemRelatedSerializer(serializers.ModelSerializer):
     class Meta:
         model = MenuItem
-        fields = ('name', 'price',)
+        fields = ['name', 'price']
 
 
 class MenuItemViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin,
@@ -24,4 +24,4 @@ class StoreSerializer(serializers.ModelSerializer):
 class StoreViewSet(viewsets.ModelViewSet):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]

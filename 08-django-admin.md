@@ -3,7 +3,7 @@
 有。Django 內建了一個 admin 介面，方便你快速產生一個簡單的管理平台。打開 `lunch/settings/base.py`，確認 `INSTALLED_APPS` 有包含 admin app：
 
 ```python
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'stores',
     'django.contrib.admin',         # 這一行啟用 Django admin。
     'django.contrib.auth',
@@ -11,7 +11,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-) 
+]
 ```
 
 接著打開 `lunch/urls.py`，確認 `admin` 有被對應到 Django admin：
@@ -67,7 +67,7 @@ admin.site.register(Store)
 ```python
 @admin.register(Store)
 class StoreAdmin(admin.ModelAdmin):
-    list_display = ('name', 'notes',)
+    list_display = ['name', 'notes']
 ```
 
 這裡宣告了 `Store` 專用的 admin class，然後指定要在列表顯示 `name` 和 `notes`。為了讓 Django 知道 `Store` model 應該使用 `StoreAdmin`，我們這裡改用 `admin.register` 這個 decorator 來告訴 Django：請在 admin 中註冊 `Store` 這個 model，並使用 `StoreAdmin` 來顯示。
@@ -81,7 +81,7 @@ class StoreAdmin(admin.ModelAdmin):
 ```python
 @admin.register(MenuItem)
 class MenuItemAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price',)
+    list_display = ['name', 'price']
 ```
 
 現在你應該可以新增菜單上的項目了。而且 Django 還會自動把 foreign key 變成一個下拉選單，並且把你所有的項目都放進去！
@@ -102,8 +102,8 @@ class MenuItemInline(admin.TabularInline):
 
 ```python
 class StoreAdmin(admin.ModelAdmin):
-    list_display = ('name', 'notes',)
-    inlines = (MenuItemInline,)
+    list_display = ['name', 'notes']
+    inlines = [MenuItemInline]
 ```
 
 進入一個 `Store` 的 admin 頁面看看。那家店的菜單變成一個表格被列在下面，而且 Django 還多給你一個空白列，讓你可以繼續新增！方便多了吧。

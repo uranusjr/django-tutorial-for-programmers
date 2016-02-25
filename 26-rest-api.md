@@ -41,10 +41,10 @@ pip install djangorestframework
 ```python
 # lunch/settings/base.py
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     ...
     'rest_framework',
-)
+]
 ```
 
 從上面的需求看來，大部份的資源都是必須登入才能使用（除了包含菜單的店家資訊之外），所以我們新增以下的設定，指名預設權限：
@@ -55,13 +55,13 @@ INSTALLED_APPS = (
 REST_FRAMEWORK = {
     # Django REST Framework 預設就是使用 JSON，所以不用設定。
     # 使用 session 登入。
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
-    ),
+    ],
     # 必須登入才能使用。
-    'DEFAULT_PERMISSION_CLASSES': (
+    'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
-    ),
+    ],
 }
 ```
 
@@ -76,7 +76,7 @@ from .models import Store, MenuItem
 class MenuItemRelatedSerializer(serializers.ModelSerializer):
     class Meta:
         model = MenuItem
-        fields = ('name', 'price',)
+        fields = ['name', 'price']
 
 class StoreSerializer(serializers.ModelSerializer):
 
@@ -88,7 +88,7 @@ class StoreSerializer(serializers.ModelSerializer):
 class StoreViewSet(viewsets.ModelViewSet):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 ```
 
 我們為 `Store` 與 `MenuItem` 各建立一個 view set，包含列表頁、細節頁的 CRUD 功能。預設會列出 model 的所有資訊。這對 menu item 而言夠了，但對 store 而言不夠好——因為我們還想列出與店家相關的菜單項目。為了達到這個目的，我們必須為這個 view set 建立一個 serializer，要求把 `menu_items` attribute（記得嗎？這是 Django 自動加入的 reverse relation field）也列出（`many=True` 代表這是個 to-many 關聯）。預設狀況下 Django REST Framework 只會列出 related objects，但我們想把 menu item 的內容 inline，所以同樣要為 menu item 建立 serializer，並明確指定要使用它來 serialize menu item。最後，因為我們希望未登入的人也能看（記得我們前面設定的預設權限是僅已登入者可使用），所以把 permission 改設成 `IsAuthenticatedOrReadOnly`。
@@ -127,10 +127,10 @@ v1.register(r'stores/menu_item', MenuItemViewSet)
 
 from .api import v1
 
-urlpatterns = patterns(
+urlpatterns = [
     # ...
     url(r'^api/v1/', include(v1.urls)),
-)
+]
 ```
 
 `register` 的第一個參數是 prefix，所以這樣就會產生如下的 API：[註 1]
@@ -145,10 +145,10 @@ Path pattern            | 功能
 
 ## Tastypie
 
-安裝：[註 2]
+安裝：
 
 ```bash
-pip install git+https://github.com/django-tastypie/django-tastypie.git
+pip install django-tastypie
 ```
 
 設定：
@@ -156,15 +156,15 @@ pip install git+https://github.com/django-tastypie/django-tastypie.git
 ```python
 # lunch/settings/base.py
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     # ...
     'tastypie',
-)
+]
 
 # ...
 
 # Tastypie 預設使用 XML，且必須明確在每個 resource 中指定 auth/auth 資訊。
-TASTYPIE_DEFAULT_FORMATS = ('json',)
+TASTYPIE_DEFAULT_FORMATS = ['json']
 ```
 
 Tastypie 預設附了一個 API key 的 model，所以我們要建立它：
@@ -190,7 +190,7 @@ class ReadOnlyAuthentication(authentication.Authentication):
 class MenuItemRelatedResource(resources.ModelResource):
     class Meta:
         queryset = MenuItem.objects.all()
-        fields = ('name', 'price',)
+        fields = ['name', 'price']
 
 class StoreResource(resources.ModelResource):
 
@@ -211,8 +211,8 @@ class MenuItemResource(resources.ModelResource):
     class Meta:
         queryset = MenuItem.objects.all()
         resource_name = 'stores/menu_item'
-        list_allowed_methods = ('get', 'post',)
-        detail_allowed_methods = ('post', 'put', 'delete', 'patch',)
+        list_allowed_methods = ['get', 'post']
+        detail_allowed_methods = ['post', 'put', 'delete', 'patch']
         authentication = authentication.SessionAuthentication()
         authorization = authorization.DjangoAuthorization()
 ```
@@ -235,11 +235,11 @@ v2.register(MenuItemResource())
 
 from .api import v2
 
-urlpatterns = patterns(
+urlpatterns = [
     # ...
     # 必須放在 api/v1/ 後面，才不會把它的 patterns 吃掉。
     url(r'^api/', include(v2.urls)),
-)
+]
 ```
 
 可以看到 Tastypie 的風格和 Django REST Framework 不同，比較像 model 和 form 的寫法，是用 `Meta` 來描述，並且直接把額外的欄位宣告（同樣需要明確宣告 to-many field！）放在 resource 裡，而不是使用一個額外的 class。描述的風格也不太一樣：
@@ -266,7 +266,7 @@ django-tastypie
 djangorestframework
 ```
 
-我們在 deploy 到 Ubuntu server 那章也提過，這個 requirements 檔案其實就是用來列出所有需要的套件，方便你用 `pip install -r` 一次裝好。所以當我們有新安裝任何套件時，就應該更新這裡的內容。[註 3]
+我們在 deploy 到 Ubuntu server 那章也提過，這個 requirements 檔案其實就是用來列出所有需要的套件，方便你用 `pip install -r` 一次裝好。所以當我們有新安裝任何套件時，就應該更新這裡的內容。[註 2]
 
 ### Heroku
 
@@ -327,6 +327,4 @@ sudo service nginx restart
 
 註 1：還有一些額外的，但我們關心的只有這些。
 
-註 2：Tastypie 的 Django 1.8 支援尚未正式釋出，所以這邊使用了 PIP 的 Git 功能安裝開發版本。正式支援應該會在 0.12.2 版之後發佈，到時候只要用 `pip install django-tastypie` 即可安裝。
-
-註 3：如果想瞭解更詳細的 requirements file 語法與使用技巧，可以參照 PIP 的[官方文件](http://pip.readthedocs.org/en/latest/user_guide.html#requirements-files)。
+註 2：如果想瞭解更詳細的 requirements file 語法與使用技巧，可以參照 PIP 的[官方文件](http://pip.readthedocs.org/en/latest/user_guide.html#requirements-files)。

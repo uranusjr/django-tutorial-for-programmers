@@ -13,7 +13,7 @@ class ReadOnlyAuthentication(authentication.Authentication):
 class MenuItemRelatedResource(resources.ModelResource):
     class Meta:
         queryset = MenuItem.objects.all()
-        fields = ('name', 'price',)
+        fields = ['name', 'price']
 
 
 class StoreResource(resources.ModelResource):
@@ -36,7 +36,7 @@ class MenuItemResource(resources.ModelResource):
     class Meta:
         queryset = MenuItem.objects.all()
         resource_name = 'stores/menu_item'
-        list_allowed_methods = ('get', 'post',)
-        detail_allowed_methods = ('post', 'put', 'delete', 'patch',)
+        list_allowed_methods = ['get', 'post']
+        detail_allowed_methods = ['post', 'put', 'delete', 'patch']
         authentication = authentication.SessionAuthentication()
         authorization = authorization.DjangoAuthorization()

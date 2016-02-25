@@ -25,7 +25,7 @@ python manage.py startapp stores
 我們還要讓 Django 知道這個 app 的存在。打開 `lunch/settings/base.py`，把 `stores` 這個 app 加入 `INSTALLED_APPS` 列表：
 
 ```python
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'stores',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -33,7 +33,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-)
+]
 ```
 
 Django 並沒有硬性規定 app 的順序，不過我個人喜歡把自己的 apps 排在內建 apps 前面。大致上的規則是，前面的 app 可以 depend on 後面，但是後面不可以 depend 前面。

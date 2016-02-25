@@ -115,12 +115,12 @@ python manage.py startapp base
 記得把 `base` 加入 `INSTALLED_APPS`：
 
 ```python
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'pages',
     'stores',
     'base',
     # ...
-)
+]
 ```
 
 因為 `base` 是上面兩個 apps 的基礎，所以我習慣放在下面。

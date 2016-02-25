@@ -1,5 +1,4 @@
 Django>=1.9,<1.10
-django-braces==1.8.1
 django-crispy-forms==1.6.0
 django-tastypie
 django-toolbelt

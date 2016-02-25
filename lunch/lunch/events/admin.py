@@ -10,9 +10,9 @@ class OrderInline(admin.StackedInline):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    inlines = (OrderInline,)
+    inlines = [OrderInline]
 
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('event', 'item', 'user',)
+    list_display = ['event', 'item', 'user']

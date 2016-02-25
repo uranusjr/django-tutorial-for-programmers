@@ -140,10 +140,10 @@ python ../manage.py compilemessages
 # lunch/settings/base.py
 
 # 設定我們要使用的語言。
-LANGUAGES = (
+LANGUAGES = [
     ('en-us', 'English (United States)',),
     ('zh-hant', '中文（繁體）')
-)
+]
 ```
 
 ```html
@@ -180,7 +180,7 @@ $('.language-switch').change(function () {
 urlpatterns = [
     # ...
     url(r'^i18n/', include('django.conf.urls.i18n')),
-)
+]
 ```
 
 在頁面上按按看這個 widget，應該會感受到一個頁面重新整理。如果你再去看 admin，應該就可以看到語言改變。

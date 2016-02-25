@@ -40,7 +40,7 @@ class OrderForm(forms.ModelForm):
 
     class Meta:
         model = Order
-        fields = ('item', 'notes',)
+        fields = ['item', 'notes']
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -123,30 +123,10 @@ class EventDetailView(DetailView):
         return login_required(view)
 ```
 
-不過這如果每次都得這麼做，實在也很麻煩。因為這種權限管理太常見，所以也已經有人把它（與其他常見功能）包成可重用的 app。
-
-我們安裝這個 app：
-
-```
-pip install django-braces
-```
-
-把 `braces` 加入 `INSTALL_APPS`：
+不過這如果每次都得這麼做，實在也很麻煩。因為這種權限管理太常見，所以 Django 也已經提供了可重用的功能：
 
 ```python
-# lunch/settings/base.py
-
-INSTALLED_APPS = (
-    # ...
-    'braces',
-    # ...
-)
-```
-
-然後就可以這樣用：[註 1]
-
-```python
-from braces.views import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class EventCreateView(LoginRequiredMixin, CreateView):
     # ...
@@ -154,8 +134,6 @@ class EventCreateView(LoginRequiredMixin, CreateView):
 class EventDetailView(LoginRequiredMixin, DetailView):
     # ...
 ```
-
-方便多了吧。Django Braces 包含了許多常見的功能性 mixin，例如限定只有已登入才能看、只有未登入才能看、可以處理 Ajax（類似之前我們在 FBV 用的 `request.is_ajax` 技巧）等等一大堆。如果你覺得某個功能很常見，或許可以去[他們的文件](https://django-braces.readthedocs.org/en/latest/)看看有沒有現成的 mixin 可用！
 
 現在我們可以保證使用者已經登入，就可以來實作 `post` 處理使用者點餐：
 
@@ -176,7 +154,7 @@ class EventDetailView(LoginRequiredMixin, DetailView):
         return redirect(order.event.get_absolute_url())
 ```
 
-和之前的做法差不多，我們用 `request.POST` 建立 form，產生 object（但先不要存進資料庫），帶入我們想要的資訊，然後儲存物件，接著重導向回自己（以達到刷新頁面需求）。注意因為 select widget 一定會選擇某個項目（我們之前把空值選項拿掉了），而且 `notes` 可以為空，使得這個表單的值應該永遠合法，所以我們這裡就不處理。[註 2] 不過如果使用者亂搞，我們會在執行 `is_valid` 時發現，並回傳一個 400 Bad Request 給他。
+和之前的做法差不多，我們用 `request.POST` 建立 form，產生 object（但先不要存進資料庫），帶入我們想要的資訊，然後儲存物件，接著重導向回自己（以達到刷新頁面需求）。注意因為 select widget 一定會選擇某個項目（我們之前把空值選項拿掉了），而且 `notes` 可以為空，使得這個表單的值應該永遠合法，所以我們這裡就不處理。[註 1] 不過如果使用者亂搞，我們會在執行 `is_valid` 時發現，並回傳一個 400 Bad Request 給他。
 
 在帶入額外資訊時，注意這裡我們不是使用 `self.object`。如果仔細看看 `DetailView` 的[實作](http://ccbv.co.uk/projects/Django/1.7/django.views.generic.detail/DetailView/)，會發現它在 `get` method 中才呼叫 `get_object`，並把它的值賦給 `self.object`。在進入 `post` 時，我們不會經過 `get` method，所以必須自己呼叫 `get_object`。
 
@@ -184,6 +162,4 @@ class EventDetailView(LoginRequiredMixin, DetailView):
 
 ---
 
-註 1：`LoginRequiredMixin` 必須要放在最前面，才能達到效果。詳情請參閱 Django Braces 文件。
-
-註 2：其實有部分原因是要處理錯誤很麻煩，懶得寫。如果你需要在這裡處理錯誤，繼承 `FormView` 而非 `DetailView` 會比較容易實作——或者直接改用一個 function-based view 也可以。Class-based views 不是萬能。
+註 1：其實有部分原因是要處理錯誤很麻煩，懶得寫。如果你需要在這裡處理錯誤，繼承 `FormView` 而非 `DetailView` 會比較容易實作——或者直接改用一個 function-based view 也可以。Class-based views 不是萬能。

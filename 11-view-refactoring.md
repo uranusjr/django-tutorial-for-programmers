@@ -11,10 +11,10 @@ python manage.py startapp pages
 把它加入 `INSTALLED_APPS`：
 
 ```python
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'pages',
     # ...
-)
+]
 ```
 
 接著把 `home` 從 `stores/views.py` 移到 `pages/views.py`，並修改 `lunch/urls.py`：
