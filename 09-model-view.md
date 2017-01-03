@@ -104,7 +104,7 @@ urlpatterns = patterns(
 )
 ```
 
-`(?P<name>pattern)` 是 regular expression 的 **named grou**，就是根據 pattern 把抓到的 group 取名為 `name`，這在 `url` tag 裡面會用到，稍後解釋。`pk` 在這裡指 primary key，是 Django 慣用的命名法。
+`(?P<name>pattern)` 是 regular expression 的 **named group**，就是根據 pattern 把抓到的 group 取名為 `name`，這在 `url` tag 裡面會用到，稍後解釋。`pk` 在這裡指 primary key，是 Django 慣用的命名法。
 
 接者是 view function。在 URL 中被捕捉的值會直接被傳入，所以：
 
