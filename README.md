@@ -1,3 +1,10 @@
+# 注意：版本不再維護
+
+**Django 官方已於 2017 年 4 月結束 1.9 版支援，並不再提供安全性更新。本教學亦不將繼續更新，並可能包含未修復之錯誤。請儘速升級 Django 至較新版本，並改用對應之教學版本。**
+
+---
+
+
 《為程式人寫的 Django Tutorial》章節內容與範例程式碼
 
 <http://ithelp.ithome.com.tw/ironman7/app/profile/20091495/dev>
