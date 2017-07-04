@@ -88,6 +88,12 @@ def home(request):
 url(r'^store/', include('stores.urls')),
 ```
 
+請確認在 `lunch/urls.py` 的開頭有 import `include`
+
+```python
+from django.conf.urls import url, include
+```
+
 這代表「如果網址以 `store/` 開頭（注意 pattern 後面沒有 `$`），嘗試從 `stores.urls` 尋找符合項目」。
 
 接著在 `stores` 裡新增一個檔案 `urls.py`，內容如下：
