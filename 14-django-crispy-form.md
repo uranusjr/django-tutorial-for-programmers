@@ -131,7 +131,7 @@ class StoreForm(forms.ModelForm):
 ```python
 from django.forms.models import modelform_factory
 
-StoreForm = modelform_factory(Store)   # 在 create 與 update 各有一行
+StoreForm = modelform_factory(Store, fields=('name', 'notes',))   # 在 create 與 update 各有一行
 ```
 
 並加上這一行：
