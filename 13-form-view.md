@@ -126,7 +126,7 @@ def store_update(request, pk):
         store = Store.objects.get(pk=pk)
     except Store.DoesNotExist:
         raise Http404
-    StoreForm = modelform_factory(Store, fields=('name', 'notes'))
+    StoreForm = modelform_factory(Store, fields=('name', 'notes',))
     if request.method == 'POST':
         form = StoreForm(request.POST, instance=store)
         if form.is_valid():
