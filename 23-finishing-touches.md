@@ -5,6 +5,8 @@
 ```python
 # events/views.py
 
+from .models import Order
+
 class EventDetailView(LoginRequiredMixin, DetailView):
     # ...
     def get_order(self, user):
