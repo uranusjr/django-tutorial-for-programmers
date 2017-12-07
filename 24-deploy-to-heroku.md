@@ -113,6 +113,8 @@ application = Cling(get_wsgi_application())     # 注意這一行。
 ```
 *.py[co]
 __pycache__
+
+.env
 ```
 
 然後執行指令：

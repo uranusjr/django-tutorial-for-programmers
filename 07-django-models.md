@@ -15,8 +15,12 @@
 ```python
 class Store(models.Model):
 
-    name = models.CharField(max_length=20)
-    notes = models.TextField(blank=True, default='')
+    name = models.CharField(
+        max_length=20,
+    )
+    notes = models.TextField(
+        blank=True, default='',
+    )
 
     def __str__(self):
         return self.name
@@ -24,12 +28,18 @@ class Store(models.Model):
 
 class MenuItem(models.Model):
 
-    store = models.ForeignKey('Store', related_name='menu_items')
-    name = models.CharField(max_length=20)
-    price = models.IntegerField()
+    store = models.ForeignKey(
+        to=Store, related_name='menuitem_set',
+    )
+    name = models.CharField(
+        max_length=20,
+    )
+    price = models.IntegerField(
+    )
 
     def __str__(self):
         return self.name
+
 ```
 
 在 Django 中，一個 model 就是一個 class。所有的 Django models 都必須繼承 `django.db.models.Model`。我們在兩個 models 中依照上面的結構，加入合適的欄位。各欄位形態的意義如下：
@@ -39,11 +49,11 @@ class MenuItem(models.Model):
 * `IntegerField` 對應到 `INTEGER`。
 * `ForeignKey` 是 Django 專門用來管理 foreign key 的 model field。我們來詳細討論一下它的原理。
 
-當你建立一個 model 時，Django 會自動幫它加入一個名為 `id` 的 `AutoField`——對應到資料庫的 `INTEGER`，加上 primary key（和 auto increment）屬性。[註 2] `ForeignKey` 同樣對應到 `INTEGER`，但當它被使用時，Django 會自動用裡面的值執行一個 `SELECT`，把該 ID 對應的物件取出來。`ForeignKey` 必須擁有一個參數，指明這個 FK 指向的 model class 名稱。[註 3]
+當你建立一個 model 時，Django 會自動幫它加入一個名為 `id` 的 `AutoField`——對應到資料庫的 `INTEGER`，加上 primary key（和 auto increment）屬性。[註 2] `ForeignKey` 同樣對應到 `INTEGER`，但當它被使用時，Django 會自動用裡面的值執行一個 `SELECT`，把該 ID 對應的物件取出來。`ForeignKey` 必須擁有兩個參數，指明這個 FK 指向的 model class，以及當一筆資料（store）被刪除時，要怎麼處理關聯它的資料（menu item）——在這裡我們指定 `CASCADE`，代表如果資料被刪除，**同時把所有必要的關聯一併刪掉**。[註 3]
 
-你可能已經注意到，我們並沒有為 `Store` 的 `menu_items` 建立 attribute，但這裡 `related_name` 的值就是它。Django 會自動建立 foreign key 的 reverse relation，所以你不需要自行建立。
+你可能已經注意到，我們並沒有為 `Store` 的 `menuitem_set` 建立 attribute，但這裡 `related_name` 的值就是它。Django 會自動建立 foreign key 的 reverse relation，所以你不需要自行建立。
 
-在 `ForeignKey` 的狀況中，Django 預設會用 model 的名稱後面加 `_set` 來當作 reverse relation 的名稱，所以 `MenuItem.store` 的預設 reverse relation key 會是 `Store.menuitem_set`。你當然可以直接使用這個值，不過如果狀況允許，我個人推薦盡量還是手動設定這個值。即使設成和預設一樣，也比沒有設定好，因為 *explicit is better than implicit* 是 Python 的中心思想之一。
+在 `ForeignKey` 的狀況中，Django 預設會用 model 的名稱後面加 `_set` 來當作 reverse relation 的名稱，所以 `MenuItem.store` 的預設 reverse relation key 會是 `Store.menuitem_set`。這和我們設定的值一模一樣，所以其實可以不設；不過如果狀況允許，我個人推薦盡量還是明確設定，因為 *explicit is better than implicit* 是 Python 的中心思想之一，而且這會讓你以後 trace 程式碼時更容易找到某個 reverse relation 的定義。
 
 我們另外在兩個 models 都各加上了一個 [`__str__`](https://docs.python.org/3/reference/datamodel.html#object.__str__) 函式。這是 Python 用來把物件轉換成 `str` 的 hook；因為做網站時，常常需要把東西變成字串，所以這會很方便。
 
@@ -52,14 +62,15 @@ class MenuItem(models.Model):
 在 console 執行以下指令：
 
 ```bash
-python manage.py makemigrations stores
+pipenv run python manage.py makemigrations stores
 ```
 
 這告訴 Django 我們更新了 `stores` 中的 models。這個指令應該會輸出下面的內容：
 
 ```
+Loading .env environment variables…
 Migrations for 'stores':
-  0001_initial.py:
+  stores/migrations/0001_initial.py
     - Create model MenuItem
     - Create model Store
     - Add field store to menuitem
@@ -72,16 +83,16 @@ Migrations for 'stores':
 接著我們要實際執行這個檔案，讓資料庫發生改變：
 
 ```bash
-python manage.py migrate stores
+pipenv run python manage.py migrate stores
 ```
 
 輸出：
 
 ```
+Loading .env environment variables…
 Operations to perform:
   Apply all migrations: stores
 Running migrations:
-  Rendering model states... DONE
   Applying stores.0001_initial... OK
 ```
 
@@ -97,11 +108,11 @@ python manage.py dbshell
 
 ```
 sqlite> .tables
-auth_group                  django_admin_log          
-auth_group_permissions      django_content_type       
-auth_permission             django_migrations         
-auth_user                   django_session            
-auth_user_groups            stores_menuitem           
+auth_group                  django_admin_log
+auth_group_permissions      django_content_type
+auth_permission             django_migrations
+auth_user                   django_session
+auth_user_groups            stores_menuitem
 auth_user_user_permissions  stores_store
 ```
 
@@ -113,11 +124,21 @@ auth_user_user_permissions  stores_store
 
 ```
 sqlite> select * from django_migrations;
-1|contenttypes|0001_initial|2014-09-19 09:46:37.731368
-2|auth|0001_initial|2014-09-19 09:46:37.758253
-3|admin|0001_initial|2014-09-19 09:46:37.792646
-4|sessions|0001_initial|2014-09-19 09:46:37.797104
-5|stores|0001_initial|2014-09-24 03:15:42.455255
+1|contenttypes|0001_initial|2017-12-07 10:13:56.444638
+2|auth|0001_initial|2017-12-07 10:13:56.466164
+3|admin|0001_initial|2017-12-07 10:13:56.483577
+4|admin|0002_logentry_remove_auto_add|2017-12-07 10:13:56.502065
+5|contenttypes|0002_remove_content_type_name|2017-12-07 10:13:56.547797
+6|auth|0002_alter_permission_name_max_length|2017-12-07 10:13:56.558823
+7|auth|0003_alter_user_email_max_length|2017-12-07 10:13:56.572393
+8|auth|0004_alter_user_username_opts|2017-12-07 10:13:56.588283
+9|auth|0005_alter_user_last_login_null|2017-12-07 10:13:56.602905
+10|auth|0006_require_contenttypes_0002|2017-12-07 10:13:56.607146
+11|auth|0007_alter_validators_add_error_messages|2017-12-07 10:13:56.622861
+12|auth|0008_alter_user_username_max_length|2017-12-07 10:13:56.642080
+13|auth|0009_alter_user_last_name_max_length|2017-12-07 10:13:56.659138
+14|sessions|0001_initial|2017-12-07 10:13:56.665113
+15|stores|0001_initial|2017-12-07 11:20:01.623780
 ```
 
 這就是 Django 用來記錄 migration 的表！這裡記錄了目前各 app 被 migrate 到哪個階段，以及進行的時間。這個表格搭配 `migrations` 裡面的資料，就能讓 Django 偵測 models 的修改，幫我們產生合適的 migration record，並對資料庫進行合適的設定。
@@ -127,7 +148,7 @@ sqlite> select * from django_migrations;
 對了，剛剛那個資料庫介面可以用 control-d 退出。
 
 
-更多關於 Django model 欄位的資訊，請參照[官網文件](https://docs.djangoproject.com/en/1.7/ref/models/fields/)。
+更多關於 Django model 欄位的資訊，請參照[官網文件](https://docs.djangoproject.com/en/2.0/ref/models/fields/)。
 
 ---
 
@@ -135,4 +156,4 @@ sqlite> select * from django_migrations;
 
 註 2：這個行為可以被覆寫，不過我們這裡不管。
 
-註 3：你可以能會想知道如果需要 refer 其他 app 中的 model 該怎麼辦。之後會講到，請耐心！
+註 3：其他可能的值包括 `PROTECT`、`SET_NULL`、`SET_DEFAULT`、`SET()`、`NO_NOTHING`。請參照[官方文件](https://docs.djangoproject.com/en/2.0/ref/models/fields/#django.db.models.ForeignKey.on_delete)了解各種值的差異與用法。

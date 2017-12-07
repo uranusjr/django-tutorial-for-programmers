@@ -17,7 +17,7 @@ Django 自稱 MTV 框架，把自己分成三個部分：models、templates、vi
 現在開始來實作第二部分。Django 提供了一個指令，可以方便你建立 app：
 
 ```bash
-python manage.py startapp stores
+pipenv run python manage.py startapp stores
 ```
 
 這會建立一個叫 `stores` 的目錄，用來包裝我們的 app（其名稱就是 `stores`）。在 Django 中，通常習慣把 app 取名為它主要功能的 model 的複數形。這個 app 主要負責的是管理店家，所以我們會把主要的 model 取名為 `Store`。所以 app 名稱就是 stores 了。注意 Python 習慣把 module 取名為全小寫（可以使用底線），而既然 Django app 本身是 Python module，所以也應該遵從相同的命名規則。
@@ -26,17 +26,18 @@ python manage.py startapp stores
 
 ```python
 INSTALLED_APPS = [
-    'stores',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'stores',
 ]
 ```
 
-Django 並沒有硬性規定 app 的順序，不過我個人喜歡把自己的 apps 排在內建 apps 前面。大致上的規則是，前面的 app 可以 depend on 後面，但是後面不可以 depend 前面。
+Django 並沒有硬性規定 app 的順序，不過一般除了有特殊理由（例如需要覆蓋內建的元件），都會把自己的 apps 排在最面。大致上的規則和 Python 的 import 習慣類似：先放內建，再來第三方套件，最後是自己的。
 
 現在看看你的專案目錄：
 
@@ -55,6 +56,7 @@ lunch
 │   │   └── __init__.py
 │   ├── __init__.py
 │   ├── admin.py
+│   ├── apps.py
 │   ├── models.py
 │   ├── tests.py
 │   └── views.py
@@ -63,9 +65,10 @@ lunch
 
 `stores` 裡面各項目的用途如下：
 
-* `migrations` 用來存放 database migration，也就是資料庫結構改變的資料。這些檔案通常不會直接被執行，而是在你透過 Django 指令改變資料庫結構時，用來提示 Django 你的資料在某個時間點的結構。
-* `admins.py` 是用來設定 Django admin。先跳過。
-* `models.py` 和 `views.py` 是用來放 models 和 views 的程式碼。
-* `tests.py` 是用來放單元測試。
+* `migrations` 存放 database migration，也就是資料庫結構改變的資料。這些檔案通常不會直接被執行，而是在你透過 Django 指令改變資料庫結構時，用來提示 Django 你的資料在某個時間點的結構。
+* `admins.py` 設定 Django admin。
+* `apps.py` 設定 app 的性質（例如在 admin 裡的名稱）。
+* `models.py` 和 `views.py` 放 models 和 views 的程式。
+* `tests.py` 放單元測試。
 
-如果你不需要某些檔案，其實可以刪除它們（當然，你一定會用到 `__init__.py`，所以它不能刪）；如果你有其他需求，也同樣可以另外新增其他檔案與目錄。不過我們首先會先使用預設產生的檔案。明天我們要來看看 `views.py`，為你的網站建立第一個（不是預設的）頁面。
+如果你不需要某些檔案，其實可以刪除它們；如果你有其他需求，也同樣可以另外新增其他檔案與目錄。不過我們首先會先使用預設產生的檔案。明天我們要來看看 `views.py`，為你的網站建立第一個（不是預設的）頁面。

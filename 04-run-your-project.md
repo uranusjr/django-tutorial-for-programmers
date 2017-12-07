@@ -1,4 +1,4 @@
-我們昨天解釋了 `django-admin` 為你產生的專案架構。今天我們要把架構中缺少的設定補上，讓這個專案能夠執行。下面是我們的專案架構，以防你忘記了（從現在起我會省略最外層目錄，反正它裡面只有兩個目錄，而且其中 `venv` 的內容不重要）：
+我們昨天解釋了 `django-admin` 為你產生的專案架構。今天我們要把架構中缺少的設定補上，讓這個專案能夠執行。下面是我們的專案架構，以防你忘記了（從現在起我會省略一些無關的檔案，只關注我們會手動修改的程式）：
 
 ```
 lunch
@@ -14,7 +14,7 @@ lunch
 
 ## Django 的設定值
 
-你會發現所有的全域變數都是用**大寫與底線**構成。這是 Django 設定的命名慣例。我們忽略其他東西（註釋和 `import` 等等），來看看這些設定的用途。
+所有的全域變數都是用**大寫與底線**構成。這是 Django 設定的命名慣例。我們忽略其他東西（註釋和 `import` 等等），來看看這些設定的用途。
 
 ### `BASE_DIR`
 
@@ -24,7 +24,7 @@ lunch
 os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ```
 
-亦即「這個檔案的外層的外層」，也就是上面那個樹狀圖的第一個 `lunch`（亦即 `django-admin` 建立的外層 `lunch` 目錄）。
+亦即「這個檔案的外層的外層」，也就是上面那個樹狀圖的第一個 `lunch`。
 
 ### `SECRET_KEY`
 
@@ -36,7 +36,7 @@ os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 如果設為 `True`，則 Django 會在遇到錯誤時顯示各式各樣的錯誤訊息，協助你找到問題。所以通常我們在正式開站前要設成 `False`，不然就會和某市長候選人的官方網站一樣被[嘲笑](http://debug-guy-blog.logdown.com/posts/222620-taipeihope-ggininder)。
 
-好，先看到這邊。我們在網站上線時要把 `DEBUG` 關掉。可是在開發時，我們當然想看完整的錯誤訊息。所以這兩個環境的設定不能一樣。可是如果我們每次都在要上線時才改設定，肯定遲早會忘記，然後就像某團隊一樣出包。為了避免這個狀況，我們通常我們會有至少兩個設定檔：一個開發用，一個部署用。[註 1]
+我們在網站上線時要把 `DEBUG` 關掉。可是在開發時，我們當然想看完整的錯誤訊息。所以這兩個環境的設定不能一樣。可是如果我們每次都在要上線時才改設定，肯定遲早會忘記，然後就像某團隊一樣出包。為了避免這個狀況，我們通常我們會有至少兩個設定檔：一個開發用，一個部署用。[註 1]
 
 為了方便管理這些設定檔，我們建議把它們通通丟到一個 `settings` 模組裡。所以我們在原本 `settings.py` 的位置創建一個目錄，叫做 `settings`，然後把 `settings.py` 丟進去，並改名為 `base.py`。然後在 `settings` 目錄裡多建立三個空白檔案：`__init__.py`、`local.py`、`production.py`。
 
@@ -83,19 +83,19 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(
 
 因為我們把設定檔拿進了一層（原本是 `lunch/settings.py`，現在是 `lunch/settings/local.py`），所以這個路徑要多往外跳一層才會正確。
 
-接著我們還要告訴 Django 我們的設定檔已經換位置了。如果你還記得昨天的內容，Django 是用 `DJANGO_SETTINGS_MODULE` 這個環境變數來檢查設定檔位置。所以我們可以在命令列把環境變數設起來：
+接著我們還要告訴 Django 我們的設定檔已經換位置了。如果你還記得昨天的內容，Django 是用 `DJANGO_SETTINGS_MODULE` 這個環境變數來檢查設定檔位置。
+
+我們可以每次在執行指令時，從命令列設定環境變數設，不過這樣執行環境每次重開終端機都會重設，很不方便。所以接下來我們要用 Pipenv 附帶的 [Dotenv](https://github.com/theskumar/python-dotenv) 功能，在我們執行指令時自動載入環境變數。在專案根目錄（最外層的 `lunch` 目錄，與 `Pipfile` 同層）建立一個叫 `.env` 的檔案，包含下面這行：
 
 ```bash
-export DJANGO_SETTINGS_MODULE=lunch.settings.local
+DJANGO_SETTINGS_MODULE=lunch.settings.local
 ```
 
-Windows 使用者請使用
+就可以確保你每次執行 `pipenv run` 時，都會把.gi
 
-```batch
-set DJANGO_SETTINGS_MODULE=lunch.settings.local
-```
+所以你可以在虛擬環境的 `activate` 指令裡加上這一行。打開 `venv/lunch/bin/activate`（Windows 是 `venv\lunch\Scripts\activate.bat`），在最後面新增一行，加入上面的指令。這樣你之後啟用虛擬環境時，就會自動更新環境變數了。
 
-不過環境變數每次重開終端機都會重設，很不方便。所以你可以在虛擬環境的 `activate` 指令裡加上這一行。打開 `venv/lunch/bin/activate`（Windows 是 `venv\lunch\Scripts\activate.bat`），在最後面新增一行，加入上面的指令。這樣你之後啟用虛擬環境時，就會自動更新環境變數了。
+> 注意：一般而言我們不會把這個檔案放入版本控制。如果你用 Git，請記得在 `.gitignore` 裡加入 `.env`；其他版本控制工具亦同。
 
 接著，在 `base.py` 找到這一段：
 
@@ -121,9 +121,9 @@ DATABASES = {
 
 如果你想用其他資料庫，請參考[官方文件](https://docs.djangoproject.com/en/1.7/ref/databases/)。注意你必須安裝合適的 Python 函式庫：
 
-* PostgreSQL：`pip install psycopg2`
-* MySQL（或 MariaDB）：`pip install mysqlclient`
-* Oracle：`pip install cx_Oracle`
+* PostgreSQL：`pipenv install psycopg2`
+* MySQL（或 MariaDB）：`pipenv install mysqlclient`
+* Oracle：`pipenv install cx_Oracle`
 
 而且這些都需要 C 編譯器與 Python 頭文件。如果你不知道要怎麼設定，那麼就先暫時用 SQLite 3 吧。
 
@@ -146,50 +146,50 @@ DATABASES = {
 接著我們用以下的指令，在資料庫裡建立預設需要的表格：（請 `cd` 到 `manage.py` 所在的目錄再執行）
 
 ```bash
-python manage.py migrate
+pipenv run python manage.py migrate
 ```
 
 你應該會看到這樣的輸出：
 
+    Loading .env environment variables…
     Operations to perform:
-      Synchronize unmigrated apps: messages, staticfiles
-      Apply all migrations: admin, sessions, auth, contenttypes
-    Synchronizing apps without migrations:
-      Creating tables...
-        Running deferred SQL...
-      Installing custom SQL...
+      Apply all migrations: admin, auth, contenttypes, sessions
     Running migrations:
-      Rendering model states... DONE
       Applying contenttypes.0001_initial... OK
       Applying auth.0001_initial... OK
       Applying admin.0001_initial... OK
+      Applying admin.0002_logentry_remove_auto_add... OK
       Applying contenttypes.0002_remove_content_type_name... OK
       Applying auth.0002_alter_permission_name_max_length... OK
       Applying auth.0003_alter_user_email_max_length... OK
       Applying auth.0004_alter_user_username_opts... OK
       Applying auth.0005_alter_user_last_login_null... OK
       Applying auth.0006_require_contenttypes_0002... OK
+      Applying auth.0007_alter_validators_add_error_messages... OK
+      Applying auth.0008_alter_user_username_max_length... OK
+      Applying auth.0009_alter_user_last_name_max_length... OK
       Applying sessions.0001_initial... OK
 
-代表成功。如果你使用 SQLite 3，應該會在專案目錄外面（和 venv 同一層）發現一個叫 db.sqlite3 的檔案，代表我們的資料庫。（如果使用其他資料庫，也可以自己檢查一下裡面是否被建立的新的 tables。）現在我們（終於）可以執行這個網站了！Django 內建的執行指令是：
+代表成功。如果你使用 SQLite 3，應該會在專案根目錄發現一個叫 `db.sqlite3` 的檔案，代表我們的資料庫。（如果使用其他資料庫，也可以自己檢查一下裡面是否被建立的新的 tables。）現在我們（終於）可以執行這個網站：
 
 ```bash
-python manage.py runserver
+pipenv run python manage.py runserver
 ```
 
 執行後應該會看到類似這樣的輸出
 
 ```
+Loading .env environment variables…
 Performing system checks...
 
 System check identified no issues (0 silenced).
-April 08, 2015 - 18:58:03
-Django version 1.8, using settings 'lunch.settings.local'
+December 07, 2017 - 10:16:05
+Django version 2.0, using settings 'lunch.settings.local'
 Starting development server at http://127.0.0.1:8000/
 Quit the server with CONTROL-C.
 ```
 
-如果你在瀏覽器輸入 `http://127.0.0.1:8000/`，就可以看到 Django 的預設頁面。標題是「It worked!」就代表成功了。
+如果你在瀏覽器輸入 `http://127.0.0.1:8000/` 後看到 Django 的預設頁面（上面有個火箭)，就代表成功了。
 
 要停止網站伺服器，請按 control + c。
 

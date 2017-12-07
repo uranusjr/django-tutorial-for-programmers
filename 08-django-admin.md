@@ -4,13 +4,13 @@
 
 ```python
 INSTALLED_APPS = [
-    'stores',
     'django.contrib.admin',         # 這一行啟用 Django admin。
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'stores',
 ]
 ```
 
@@ -18,10 +18,10 @@ INSTALLED_APPS = [
 
 ```python
 urlpatterns = [
-    url(r'^$', home, name='home'),
+    path('', home, name='home'),
 
     # 這一行把 admin/ 下面的 URL 對應到 Django admin。
-    url(r'^admin/', include(admin.site.urls)),
+    path('admin/', admin.site.urls),
 ]
 ```
 
@@ -30,7 +30,7 @@ urlpatterns = [
 接著用以下的指令，建立一個超級使用者帳號（用來登入管理介面）：
 
 ```bash
-python manage.py createsuperuser
+pipenv run python manage.py createsuperuser
 ```
 
 輸入帳號與密碼。（Pro tip: email 其實可以留白，直接按 enter 就行了！）
@@ -38,7 +38,7 @@ python manage.py createsuperuser
 接著把 Django 跑起來：
 
 ```bash
-python manage.py runserver
+pipenv run python manage.py runserver
 ```
 
 然後用瀏覽器打開 <http://localhost:8000/admin/>。你應該會看到登入頁面，輸入剛剛的帳密後就可以進入管理頁面了！
@@ -51,18 +51,22 @@ python manage.py runserver
 from django.contrib import admin
 from .models import Store
 
-admin.site.register(Store)
+@admin.register(Store)
+class StoreAdmin(admin.ModelAdmin):
+    pass
 ```
+
+我們建立了一個 store 專用的 admin，並用 `admin.register` 這個 decorator 來告訴 Django：請在 admin 中註冊 `Store` 這個 model，並使用 `StoreAdmin` 來顯示。
 
 重新整理 admin 網頁（記得 `runserver` 要繼續跑，如果它停掉了請重新執行它）。你應該會看到多了一欄 `Stores`！
 
 點右邊的 Add 來新增一筆資料。
 
-![](assets/django-admin-add.png)
+![Admin 新增 store 介面](assets/django-admin-add.png)
 
 按下 Save，就會多一筆資料。多建幾筆來看看！
 
-資料多了之後，列表畫面好像就有點乾。我們來把 `notes` 欄位也顯示在上面。重新修改 `stores/admin.py`，把內容改成下面這樣（`import` 部分不變，這裡省略）：
+資料多了之後，列表畫面好像就有點乾。我們來把 `notes` 欄位也顯示在上面。重新修改 `stores/admin.py`，把 admin class 改成下面這樣：
 
 ```python
 @admin.register(Store)
@@ -70,11 +74,11 @@ class StoreAdmin(admin.ModelAdmin):
     list_display = ['name', 'notes']
 ```
 
-這裡宣告了 `Store` 專用的 admin class，然後指定要在列表顯示 `name` 和 `notes`。為了讓 Django 知道 `Store` model 應該使用 `StoreAdmin`，我們這裡改用 `admin.register` 這個 decorator 來告訴 Django：請在 admin 中註冊 `Store` 這個 model，並使用 `StoreAdmin` 來顯示。
+這裡指定 `Store` 專用的 admin class 要在列表顯示 `name` 和 `notes`。
 
 重新整理列表頁！你應該會看到多了一個 `Notes` 欄位。
 
-![](assets/django-admin-list.png)
+![Admin 店家列表介面](assets/django-admin-list.png)
 
 我們再加上 `MenuItem` 的 admin：（記得 `import MenuItem`）
 
@@ -86,9 +90,9 @@ class MenuItemAdmin(admin.ModelAdmin):
 
 現在你應該可以新增菜單上的項目了。而且 Django 還會自動把 foreign key 變成一個下拉選單，並且把你所有的項目都放進去！
 
-![](assets/django-admin-add-menu-item.png)
+![Admin 新增 menu item 介面](assets/django-admin-add-menu-item.png)
 
-不過這樣有點怪怪的。通常我們新增店家的時候，都會直接加入菜單。現在這樣要先新增店家，再從 menu item 這裡新增菜單（然後選擇店家），很不方便。所以我們來用 Django admin 內建的 inline admin 功能，把 `MenuItem` 的 admin 嵌到 `Store` 的 admin 頁面裡。
+不過這有點怪。通常我們新增店家的時候，都會直接加入菜單。現在這樣要先新增店家，再從 menu item 這裡新增菜單（然後選擇店家），很不方便。所以我們來用 Django admin 內建的 inline admin 功能，把 `MenuItem` 的 admin 嵌到 `Store` 的 admin 頁面裡。
 
 先新增一個 inline admin：
 
@@ -110,4 +114,4 @@ class StoreAdmin(admin.ModelAdmin):
 
 多多新增一些資料。之後會教你怎麼把這些東西列在網頁上給一般人看。
 
-今天就到這裡！Django admin 還有很多很厲害的功能，有興趣的話請自行參照[文件](https://docs.djangoproject.com/en/dev/ref/contrib/admin/)。
+今天就到這裡！Django admin 還有很多很厲害的功能，有興趣的話請自行參照[文件](https://docs.djangoproject.com/en/2.0/ref/contrib/admin/)。

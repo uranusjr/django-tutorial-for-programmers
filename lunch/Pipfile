@@ -1,0 +1,16 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[packages]
+
+django = "*"
+"1a7919c" = {path = "../django-waitress-serve/", editable = true}
+waitress = "*"
+
+
+[dev-packages]
+

@@ -1,6 +1,0 @@
-Django>=1.9,<1.10
-django-crispy-forms==1.6.0
-django-tastypie
-django-toolbelt
-djangorestframework
-six
