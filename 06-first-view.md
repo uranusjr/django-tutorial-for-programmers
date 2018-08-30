@@ -25,7 +25,7 @@ urlpatterns = [
 
 這個 `url` 用 regular expression match 首頁，也就是 URI 是空字串的狀況，並把它對應到 `home`。
 
-接著我們實際實作 `home` function：
+接著我們在 `stores/views.py` 實際實作 `home` function：
 
 ```python
 from django.shortcuts import render
@@ -63,7 +63,7 @@ def home(request):
 
 你可以看到，這基本上就是一個 HTML 檔案。`render` 會讀取這個檔案，並以它作為 content，建立 HTTP response。
 
-把 server 跑起來，然後打開 <http://localhost:8000/> 看看。內容應該不再是 **It works!** 了，而是你剛剛放的 navbar。恭喜你完成了第一個 Django 頁面！
+再次 cd 到有 `manage.py` 的那一層，透過指令 `python manage.py runserver` 把 server 跑起來，然後打開 <http://localhost:8000/> 看看。內容應該不再是 **It works!** 了，而是你剛剛放的 navbar。恭喜你完成了第一個 Django 頁面！
 
 上面的 HTML 有一個小問題。我們沒有放**午餐系統**的連結。這個區塊應該要指向首頁，所以我們可以這樣寫：
 
